@@ -1,94 +1,90 @@
 [English](./README.en.md)
 
 # <img src="./resources/screenshots/logo.png"  width="28" style="vertical-align: middle; margin-top: -4px;" /> LiteMonitor
-一款轻量、可定制的开源桌面硬件监控软件 — 实时监测 CPU、GPU、内存、磁盘、网络等系统性能。
+가볍고 자유롭게 꾸밀 수 있는 오픈 소스 데스크톱 하드웨어 모니터입니다. CPU, GPU, 메모리, 디스크, 네트워크 등 시스템 상태를 실시간으로 보여 줍니다.
 
-A lightweight and customizable desktop hardware monitoring tool — real-time monitoring of system performance such as CPU, GPU, memory, disk, and network.
+세로/가로/작업 표시줄 표시, 테마 전환, 다국어, 투명도, 3단계 색상 경고를 지원합니다. 화면은 단순하고 설정 항목은 세밀합니다.
 
-支持横/竖屏/任务栏/网页显示、主题切换、多语言、透明度显示、三色报警等，界面简洁且高度可配置 。
-> 🟢 **立即下载最新版本：** [📦 GitHub Releases → LiteMonitor 最新版](https://github.com/Diorser/LiteMonitor/releases/latest)    /  [⏬国内镜像网站下载](https://litemonitor.cn/)    
-
-> 🟢 已支持【内存清理】和【自定义插件】功能，详见：[插件开发指南（无需编程）](./resources/plugins/PLUGIN_DEV_GUIDE.md#🔌-plugin-system)
-
-
-![LiteMonitor 主界面](./resources/screenshots/overview.png)
-
-###  🟢 横条模式 / 任务栏显示模式
-![LiteMonitor 横屏/任务栏显示](./resources/screenshots/overview3.png)
+> ℹ️ 이 저장소는 [Diorser/LiteMonitor](https://github.com/Diorser/LiteMonitor)를 기반으로 한 수정판입니다.
+> - **웹 모니터(HTTP/WebSocket 서버)와 플러그인 시스템을 제거했습니다.** 외부로 나가는 통신은 업데이트 확인, 드라이버 다운로드, 속도 테스트만 남습니다.
+> - UI 문구를 한국어로 정리했고, 첫 실행 언어는 한국어입니다.
 
 
-# 🖥️ 系统监控功能
+![LiteMonitor 메인 화면](./resources/screenshots/overview.png)
 
-| 分类 | 监控指标 |
+###  🟢 가로 막대 모드 / 작업 표시줄 모드
+![LiteMonitor 가로/작업 표시줄 표시](./resources/screenshots/overview3.png)
+
+
+# 🖥️ 모니터링 항목
+
+| 분류 | 항목 |
 |------|-----------|
-| 💻 **处理器（CPU）**  | 实时监测 CPU 使用率、温度、频率、功耗、风扇、水冷等数据。 |
-| 🎮 **显卡（GPU）**  | 展示 GPU 使用率、核心温度、显存、频率、功耗 风扇，兼容 NVIDIA / AMD / Intel 显卡。 |
-| 💾 **主机（HOST）** | 显示系统内存占用、FPS刷新率、磁盘温度、主板温度、机箱风扇等，清晰了解电脑综合情况。 |
-| 🔋 **电池（Battery）** | 监测电池状态（充电状态、电量、功耗、电流、电压等）。 |
-| 📀 **磁盘（Disk）**   | 监控磁盘读取与写入速度（KB/s、MB/s），帮助分析存储 I/O 活跃情况。支持自动/手动选择磁盘。 |
-| 🌐 **网络（Network）** | 实时显示上传与下载速度（KB/s、MB/s），提供轻量级网络流量监控。支持自动/手动选择网卡。 |
-| 📈 **流量统计（Traffic）** | 统计每日上传与下载流量，帮助分析网络使用习惯。 |
-| 🔌 **插件系统（Plugin）** | 支持监控天气、股票、加密货币、代理延迟、汇率等，支持自定义插件，扩展监控项与功能。 |
-| 🔧 **硬件传感器（Sensors）** | 硬件详情面板可以查看和监控所有系统硬件传感器数据。 |
-
-
-
-> 💡 LiteMonitor 持续完善中，如需更多监控项或功能支持，欢迎在 [GitHub Issues](https://github.com/Diorser/LiteMonitor/issues) 中反馈建议！
+| 💻 **프로세서(CPU)** | 사용률, 온도, 클럭, 전력, 팬, 수랭 펌프 |
+| 🎮 **그래픽카드(GPU)** | 사용률, 코어 온도, VRAM, 클럭, 전력, 팬. NVIDIA / AMD / Intel 지원 |
+| 💾 **시스템(HOST)** | 메모리 사용량, FPS, 디스크 온도, 메인보드 온도, 케이스 팬 |
+| 🔋 **배터리(Battery)** | 충전 상태, 잔량, 전력, 전류, 전압 |
+| 📀 **디스크(Disk)** | 읽기/쓰기 속도(KB/s, MB/s). 자동/수동 디스크 선택 |
+| 🌐 **네트워크(Network)** | 업로드/다운로드 속도(KB/s, MB/s). 자동/수동 네트워크 어댑터 선택 |
+| 📈 **트래픽 통계(Traffic)** | 일·주·월·분기·연 단위 업로드/다운로드 사용량 |
+| 🔧 **하드웨어 센서(Sensors)** | 하드웨어 상세 창에서 모든 센서 값 조회 |
 
 ---
 
-###  🟢 网络测速功能 
-![LiteMonitor 网速测试](./resources/screenshots/overview4.png)  👉 ![LiteMonitor 菜单](./resources/screenshots/overview5.jpg)
+###  🟢 네트워크 속도 테스트
+![LiteMonitor 속도 테스트](./resources/screenshots/overview4.png)  👉 ![LiteMonitor 메뉴](./resources/screenshots/overview5.jpg)
 
+###  🟢 하드웨어 추이
+![LiteMonitor 하드웨어 추이](./resources/screenshots/overview9.png)
 
-###  🟢 监控历史
-![LiteMonitor 监控历史](./resources/screenshots/overview9.png)
+###  🟢 트래픽 통계
+![LiteMonitor 트래픽 통계](./resources/screenshots/overview7.png)
 
-###  🟢 历史流量统计
-![LiteMonitor 主题编辑器](./resources/screenshots/overview7.png)
-
-###  🟢 网页版监控
-![LiteMonitor 网页版监控](./resources/screenshots/web.png)
- 
 ---
 
-# 产品功能
+# 기능
 
-| 功能 | 说明 |
+| 기능 | 설명 |
 |---|---|
-| 🎨 自定义主题 | 通过 JSON 定义颜色、字体、间距、圆角等，主题可扩展与复用。主题系统 v2 更易维护。 |
-| 🟥🟨🟩 **三色报警** | 监控项根据阈值自动切换进度条/数值颜色，支持自定义颜色与网络/磁盘独立阈值。 |
-| 🌍 多语言界面 | 内置多语言，所有菜单/短标签/监控项即时国际化。 |
-| 📊 监控项显示管理 | 按需显示或隐藏 CPU、GPU、VRAM、内存、磁盘、网络等模块。 |
-| 🧮 **横屏模式** | 全新横条布局，支持每列独立宽度、单位智能格式化、两行显示、自动计算面板宽度。 |
-| 📏 面板宽度调整 | 即时调整面板宽度，布局自动重排。 |
-| 🔠 **UI 缩放** | 自适应 DPI + 用户自定义缩放，界面与字体完美比例缩放。 |
-| 🎞️ **动画平滑** | 数值更新支持平滑动画，降低突变带来的跳动感，可自行调节速度。 |
-| 🪟 窗口与界面 | 圆角显示、透明度调节、阴影、高质量字体渲染，视觉干净优雅。 |
-| 🧭 靠边自动隐藏 | 靠屏幕边缘自动收起，靠近边缘自动弹出，支持多屏幕正确判断。 |
-| 🧲 **限制拖出屏幕** | 选项开启后，窗口不可拖出屏幕可视区域。 |
-| 👆 鼠标穿透模式 | 启用后，窗口不拦截鼠标事件，可直接操作背后应用。 |
-| 🎨 UI 与主题即时切换 | 切换主题/语言后界面即时刷新，无需重启。 |
-| 🔍 数值智能格式化 | 自动格式化单位与小数位，横屏模式支持智能“/s”去除、>=100 自动取整等。 |
-| 🔄 自动更新检测 | 启动时静默检查新版本，手动检查时展示弹窗。支持国内与 GitHub 双源。 |
-| 🚀 开机自启 | 通过计划任务方式实现管理员级别自启动。 |
-| 📂 配置文件存储 | 所有设置实时写入 `settings.json`，支持迁移与备份。 |
+| 🎨 사용자 테마 | JSON으로 색상, 글꼴, 간격, 모서리 반경을 정의합니다. 내장 테마 편집기를 제공합니다. |
+| 🟥🟨🟩 **3단계 색상 경고** | 임계값에 따라 막대와 값의 색이 바뀝니다. 네트워크/디스크는 임계값을 따로 둘 수 있습니다. |
+| 🌍 다국어 | 한국어, 영어, 일본어, 중국어(간체/번체), 독일어, 스페인어, 프랑스어, 러시아어 |
+| 📊 항목 표시 관리 | CPU, GPU, VRAM, 메모리, 디스크, 네트워크 등을 골라서 표시합니다. |
+| 🧮 **가로 모드** | 열별 너비, 단위 자동 서식, 2줄 표시, 패널 너비 자동 계산 |
+| 🔠 **UI 배율** | DPI 자동 대응과 사용자 배율 |
+| 🎞️ **부드러운 갱신** | 값 변화를 애니메이션으로 완화합니다. 속도는 조절할 수 있습니다. |
+| 🪟 창 표시 | 둥근 모서리, 투명도, 그림자, 고품질 글꼴 렌더링 |
+| 🧭 가장자리 자동 숨김 | 화면 가장자리에 붙이면 접히고, 마우스를 가져가면 펼쳐집니다. 다중 모니터 지원 |
+| 🧲 **화면 밖 이동 제한** | 켜면 창을 화면 밖으로 끌어낼 수 없습니다. |
+| 👆 클릭 통과 | 켜면 창이 마우스 입력을 가로채지 않습니다. |
+| 🧹 메모리 정리 | 메뉴에서 프로세스 작업 집합을 정리합니다. |
+| 🔄 업데이트 확인 | 시작 시 조용히 새 버전을 확인합니다. 아래 주의 사항을 확인하세요. |
+| 🚀 자동 시작 | 작업 스케줄러로 관리자 권한 자동 시작을 등록합니다. |
+| 📂 설정 저장 | 모든 설정을 실행 파일 옆 `settings.json`에 저장합니다. |
 
 ---
 
-## 📦 安装与使用
+## 📦 설치와 사용
 
-1. 前往 [Releases 页面](https://github.com/Diorser/LiteMonitor/releases) 下载最新版压缩包  
-2. 解压后运行 `LiteMonitor.exe`  
-3. 程序会自动根据系统语言加载对应语言文件
+1. 소스를 빌드하거나(아래 "빌드" 참고) 빌드된 파일을 받습니다.
+2. **일반 사용자가 쓸 수 없는 폴더**(예: `C:\Program Files\LiteMonitor`)에 둡니다.
+3. `LiteMonitor.exe`를 실행합니다. 첫 실행 언어는 한국어이며, 설정에서 바꿀 수 있습니다.
+
+### 권한과 드라이버
+- 이 프로그램은 **항상 관리자 권한으로 실행**됩니다. CPU 온도·클럭·전력, 메인보드 온도·팬, 디스크 SMART 온도, FPS 측정에 필요합니다.
+- CPU 센서를 읽으려면 서명된 커널 드라이버 **PawnIO**가 필요합니다. 없으면 설치 여부를 묻습니다.
+- 관리자 권한으로 실행되므로, 일반 사용자가 쓸 수 있는 폴더에 두면 다른 프로그램이 실행 파일을 바꿔 권한을 얻을 수 있습니다. 설치 위치를 꼭 지켜 주세요.
+
+### ⚠️ 자동 업데이트 주의
+업데이트 확인은 원본 프로젝트(Diorser/LiteMonitor)의 배포본을 받습니다. 업데이트를 적용하면 **이 수정판이 원본으로 덮어써지고**, 웹·플러그인 기능과 중국어 문구가 돌아옵니다. 이 수정판을 유지하려면 설정에서 **자동 업데이트 확인을 끄세요.**
 
 ---
 
-## 🎨 主题系统
+## 🎨 테마
 
-主题文件位于 `/themes/` 目录。
+테마 파일은 `resources/themes/` 폴더에 있습니다.
 
-示例：
+예시:
 ```json
 {
   "name": "DarkFlat_Classic",
@@ -101,82 +97,88 @@ A lightweight and customizable desktop hardware monitoring tool — real-time mo
 }
 ```
 
-> ✨ 主题系统 v2 新特点：  
-> - 布局字段更精简、统一  
-> - 字体与布局分别独立缩放  
-> - 所有布局由 Theme.Scale 自动处理  
-> - 更容易构建自己的主题模板  
+> - 레이아웃 필드는 단순하고 일관됩니다.
+> - 글꼴과 레이아웃은 따로 배율이 적용됩니다.
+> - 모든 레이아웃은 `Theme.Scale`이 자동으로 처리합니다.
 
 ---
 
-## ⚙️ 设置文件（settings.json）
+## ⚙️ 설정 파일(settings.json)
 
-| 字段 | 说明 |
+| 필드 | 설명 |
 |------|------|
-| `Skin` | 当前主题名称 |
-| `PanelWidth` | 面板宽度（支持横竖屏两种模式） |
-| `UIScale` | 用户界面缩放倍率 |
-| `Opacity` | 透明度（0.1 ~ 1.0） |
-| `Language` | 当前语言（自动检测或手动切换） |
-| `TopMost` | 是否置顶窗口 |
-| `AutoStart` | 是否开机启动 |
-| `AutoHide` | 是否启用靠边自动隐藏 |
-| `ClampToScreen` | 拖动后限制窗口在屏幕内 |
-| `ClickThrough` | 是否启用鼠标穿透 |
-| `RefreshMs` | 刷新间隔（支持完整预设） |
-| `AnimationSpeed` | 数值平滑动画速度 |
-| `HorizontalMode` | 横屏/竖屏显示模式 |
-| `PreferredNetwork` | 手动选择网卡（空=自动） |
-| `PreferredDisk` | 手动选择磁盘（空=自动） |
-| `Enabled` | 各监控项开关（CPU/GPU/MEM/NET/DISK） |
+| `Skin` | 현재 테마 이름 |
+| `PanelWidth` | 패널 너비(세로/가로 모드 각각) |
+| `UIScale` | UI 배율 |
+| `Opacity` | 투명도(0.1 ~ 1.0) |
+| `Language` | 현재 언어(비어 있으면 한국어) |
+| `TopMost` | 항상 위 |
+| `AutoStart` | 자동 시작 |
+| `AutoCheckUpdate` | 자동 업데이트 확인 |
+| `AutoHide` | 가장자리 자동 숨김 |
+| `ClampToScreen` | 화면 밖 이동 제한 |
+| `ClickThrough` | 클릭 통과 |
+| `RefreshMs` | 갱신 간격 |
+| `AnimationSpeed` | 값 애니메이션 속도 |
+| `HorizontalMode` | 가로/세로 모드 |
+| `PreferredNetwork` | 수동 선택 네트워크 어댑터(비어 있으면 자동) |
+| `PreferredDisk` | 수동 선택 디스크(비어 있으면 자동) |
+| `MonitorItems` | 모니터링 항목별 표시 설정 |
 
 ---
 
-## 🧩 架构概览
+## 🧩 구조
 
-| 文件 | 功能 |
+| 파일 | 역할 |
 |------|------|
-| `MainForm_Transparent.cs` | 主窗体、拖拽、菜单托盘、自动隐藏、透明度、位置保存 |
-| `UIController.cs` | 主题加载、DPI/UIScale 缩放、布局重构、渲染入口、定时刷新 |
-| `UIRenderer.cs` | 竖屏渲染器（组块、进度条、标题渲染） |
-| `HorizontalRenderer.cs` | 横屏渲染器（两行布局、智能标签与数值） |
-| `UILayout.cs` | 竖屏动态布局计算 |
-| `HorizontalLayout.cs` | 横屏列宽计算、面板总宽度计算 |
-| `ThemeManager.cs` | 主题加载、颜色解析、字体构建 |
-| `LanguageManager.cs` | 多语言加载、扁平化 Key 访问 |
-| `HardwareMonitor.cs` | 采集 CPU/GPU/MEM/NET/DISK 信息；自动/手动设备选择 |
-| `AutoStart.cs` | 管理计划任务，实现开机自启 |
-| `UpdateChecker.cs` | GitHub + 国内双源版本检测 |
-| `AboutForm.cs` | 关于窗口 |
+| `MainForm_Transparent.cs` | 메인 창, 드래그, 트레이 메뉴, 자동 숨김, 투명도, 위치 저장 |
+| `UIController.cs` | 테마 로드, DPI/UIScale 배율, 레이아웃 재구성, 렌더링, 주기 갱신 |
+| `UIRenderer.cs` | 세로 모드 렌더러(그룹, 막대, 제목) |
+| `HorizontalRenderer.cs` | 가로 모드 렌더러(2줄 레이아웃, 라벨과 값) |
+| `UILayout.cs` | 세로 모드 레이아웃 계산 |
+| `HorizontalLayout.cs` | 가로 모드 열 너비와 패널 너비 계산 |
+| `ThemeManager.cs` | 테마 로드, 색상 해석, 글꼴 생성 |
+| `LanguageManager.cs` | 언어 파일 로드, 평탄화된 키 조회 |
+| `HardwareMonitor.cs` | CPU/GPU/MEM/NET/DISK 수집, 자동/수동 장치 선택 |
+| `DriverInstaller.cs` | PawnIO 드라이버와 FPS 구성 요소 설치 |
+| `AutoStart.cs` | 작업 스케줄러 등록으로 자동 시작 관리 |
+| `UpdateChecker.cs` | 업데이트 확인(원본 프로젝트 배포 서버) |
+| `AboutForm.cs` | 정보 창 |
 
 ---
 
-## 🛠️ 编译说明
+## 🛠️ 빌드
 
-### 环境要求
-- Windows 10 / 11  
-- .NET 8 SDK  
-- Visual Studio 2022 或 Rider
+### 요구 사항
+- Windows 10 / 11
+- .NET 8 SDK
+- Visual Studio 2022 또는 Rider
 
-### 编译命令
-```bash
-git clone https://github.com/Diorser/LiteMonitor.git
+### 명령
+```powershell
+git clone <이 저장소 주소>
 cd LiteMonitor
-dotnet build -c Release
+dotnet build LiteMonitor.csproj -c Release
 ```
 
-输出文件：
+출력 파일:
 ```
-/bin/Release/net8.0-windows/LiteMonitor.exe
+bin/Release/net8.0-windows/LiteMonitor.exe
+```
+
+### 회귀 테스트
+```powershell
+dotnet run --project test/ReleaseReview/ReleaseReview.csproj -c Release
+dotnet run --project test/SecurityRegression/SecurityRegression.csproj
 ```
 
 ---
 
-## 📄 开源协议
-本项目基于 **MIT License** 开源，可自由使用、修改与分发。
+## 📄 라이선스
+**MIT License**를 따릅니다. 자유롭게 사용, 수정, 배포할 수 있습니다.
 
 ---
 
-## 📬 联系方式
-**作者**：Diorser  
-**项目主页**：[https://github.com/Diorser/LiteMonitor](https://github.com/Diorser/LiteMonitor)
+## 📬 원본 프로젝트
+**원작자**: Diorser
+**원본 저장소**: [https://github.com/Diorser/LiteMonitor](https://github.com/Diorser/LiteMonitor)

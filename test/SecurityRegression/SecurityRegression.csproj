@@ -9,7 +9,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="回归程序.cs.txt" />
+    <Compile Include="RegressionTests.cs.txt" />
     <Reference Include="LiteMonitor">
       <HintPath>../../bin/Release/net8.0-windows/LiteMonitor.dll</HintPath>
     </Reference>

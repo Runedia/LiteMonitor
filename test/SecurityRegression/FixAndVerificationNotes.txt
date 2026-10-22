@@ -19,7 +19,7 @@ Release 构建通过，0 错误、215 个既有警告；对照警告内容（忽
 
 重跑命令（项目根目录 PowerShell）
 dotnet build LiteMonitor.csproj -c Release --nologo
-dotnet run --project test/安全修复回归/安全修复回归.csproj -p:BaseIntermediateOutputPath="$env:TEMP/LiteMonitor安全修复回归/obj/" -p:OutputPath="$env:TEMP/LiteMonitor安全修复回归/bin/"
+dotnet run --project test/SecurityRegression/SecurityRegression.csproj -p:BaseIntermediateOutputPath="$env:TEMP/LiteMonitorSecurityRegression/obj/" -p:OutputPath="$env:TEMP/LiteMonitorSecurityRegression/bin/"
 dotnet run --project test/反馈核验/反馈核验.csproj -p:BaseIntermediateOutputPath="$env:TEMP/LiteMonitor反馈核验/obj/" -p:OutputPath="$env:TEMP/LiteMonitor反馈核验/bin/"
 
 测试实现以 .cs.txt 显式纳入测试工程，避免主项目默认递归编译测试；中间产物放在仓库外临时目录，避免测试 obj 文件混入主项目。
