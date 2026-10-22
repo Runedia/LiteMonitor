@@ -3,9 +3,11 @@
 
 세로/가로/작업 표시줄 표시, 테마 전환, 다국어, 투명도, 3단계 색상 경고를 지원합니다. 화면은 단순하고 설정 항목은 세밀합니다.
 
-> ℹ️ 이 저장소는 [Diorser/LiteMonitor](https://github.com/Diorser/LiteMonitor)를 기반으로 한 수정판입니다.
+> ℹ️ **이 저장소는 [Diorser/LiteMonitor](https://github.com/Diorser/LiteMonitor)의 fork입니다.**
+> 원본 프로그램의 저작권은 원작자 Diorser에게 있습니다. 이 fork는 원본 `master`의 `3b91b5c` 커밋을 기준으로 하며, 아래 변경 사항은 원작자가 검토하거나 보증하지 않았습니다.
 > - **웹 모니터(HTTP/WebSocket 서버), 플러그인 시스템, 자동 업데이트를 제거했습니다.** 외부로 나가는 통신은 사용자가 승인한 드라이버/FPS 구성 요소 다운로드와 메뉴에서 실행하는 속도 테스트만 남습니다.
-> - UI 문구를 한국어로 정리했고, 첫 실행 언어는 한국어입니다.
+> - UI 문구를 한국어로 정리했고, 첫 실행 언어는 한국어입니다. 중국어 파일명은 영문으로 바꿨습니다.
+> - 일부 Windows에서 CPU 사용률이 100%로 고정되어 표시되던 문제를 수정했습니다.
 
 
 ![LiteMonitor 메인 화면](./resources/screenshots/overview.png)
@@ -151,7 +153,7 @@
 
 ### 명령
 ```powershell
-git clone <이 저장소 주소>
+git clone https://github.com/Runedia/LiteMonitor.git
 cd LiteMonitor
 dotnet build LiteMonitor.csproj -c Release
 ```
@@ -174,7 +176,7 @@ dotnet run --project test/SecurityRegression/SecurityRegression.csproj
 ---
 
 ## 📄 라이선스
-**MIT License**를 따릅니다. 자유롭게 사용, 수정, 배포할 수 있습니다.
+원본 프로젝트의 README가 밝힌 **MIT License**를 따릅니다. 원본 저장소에는 별도의 `LICENSE` 파일이 없으며, 이 fork도 원본의 라이선스 표기를 그대로 유지합니다.
 
 ---
 
