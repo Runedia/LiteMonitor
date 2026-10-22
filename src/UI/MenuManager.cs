@@ -97,60 +97,6 @@ namespace LiteMonitor
 
             modeRoot.DropDownItems.Add(taskbarMode);
 
-
-            // =========================================================
-            // ★★★ [修改] 网页显示选项 (改为二级菜单结构) ★★★
-            // =========================================================
-            var itemWeb = new ToolStripMenuItem(LanguageManager.T("Menu.WebServer")); // 请确保语言包有 "Menu.WebServer"
-            
-            // 1. 子项：启用/禁用
-            var itemWebEnable = new ToolStripMenuItem(LanguageManager.T("Menu.Enable")) // 请确保语言包有 "Menu.WebServerEnabled"
-            {
-                Checked = cfg.WebServerEnabled,
-                CheckOnClick = true
-            };
-
-            // 2. 子项：打开网页 (动态获取 IP)
-            var itemWebOpen = new ToolStripMenuItem(LanguageManager.T("Menu.OpenWeb")); // 请确保语言包有 "Menu.OpenWeb"
-            itemWebOpen.Enabled = cfg.WebServerEnabled; // 只有开启时才可用
-
-            // 事件：切换开关
-            itemWebEnable.CheckedChanged += (s, e) => 
-            {
-                // 1. 更新配置
-                cfg.WebServerEnabled = itemWebEnable.Checked;
-                cfg.Save(); 
-
-                // 2. ★ 立即应用（调用 AppActions 重启服务）
-                AppActions.ApplyWebServer(cfg); 
-                
-                // 3. 刷新“打开网页”按钮的可用状态
-                itemWebOpen.Enabled = cfg.WebServerEnabled;
-
-                // 4. [新增] 开启时弹窗引导
-                if (cfg.WebServerEnabled)
-                {
-                    string msg = LanguageManager.T("Menu.WebServerTip");
-                    if (MessageBox.Show(msg, "LiteMonitor", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == DialogResult.OK)
-                    {
-                        itemWebOpen.PerformClick();
-                    }
-                }
-            };
-
-            // 事件：打开网页
-            itemWebOpen.Click += (s, e) => 
-            {
-                WebActions.OpenWebMonitor(cfg);
-            };
-
-            itemWeb.ToolTipText = LanguageManager.T("Menu.WebServerTip");
-            // 将子项加入父菜单
-            itemWeb.DropDownItems.Add(itemWebEnable);
-            itemWeb.DropDownItems.Add(itemWebOpen);
-            // 将父菜单加入“显示模式”组 (或者您可以根据喜好移到 menu.Items.Add(itemWeb) 放到外层)
-            modeRoot.DropDownItems.Add(itemWeb);
-            
             modeRoot.DropDownItems.Add(new ToolStripSeparator());
             // =========================================================
 

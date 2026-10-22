@@ -11,10 +11,7 @@ using System.Text;
 using System.Text.Json;
 using LiteMonitor;
 using LiteMonitor.src.Core;
-using LiteMonitor.src.Plugins;
-using LiteMonitor.src.Plugins.Native;
 using LiteMonitor.src.SystemServices;
-using LiteMonitor.src.WebServer;
 using LibreHardwareMonitor.Hardware;
 
 internal static class Program
@@ -57,24 +54,7 @@ internal static class Program
                 return Task.CompletedTask;
             });
         }
-        await Run("特殊字符密码可正常认证且拒绝重复参数", AuthTest);
-        await Run("未完整发送的请求头不能进入快照处理", PartialHeaderTest);
-        await Run("慢请求头在截止时间后释放连接", HeaderTimeoutTest);
-        await Run("超过上限的请求头不能进入快照处理", HeaderSizeTest);
-        await Run("股票代码清洗兼容指数与普通美股", StockTest);
         await Run("内存和显存的数值与自定义单位一致", MemoryTest);
-        await Run("TLS：插件拒绝不可信服务器证书", async () =>
-        {
-            using var executor = new PluginExecutor();
-            var http = (HttpClient)typeof(PluginExecutor).GetField("_http", Private)!.GetValue(executor)!;
-            await RejectUntrustedCertificate(_ => http);
-        });
-        await Run("TLS：插件代理拒绝不可信服务器证书", async () =>
-        {
-            using var executor = new PluginExecutor();
-            var getClient = typeof(PluginExecutor).GetMethod("GetClient", Private)!;
-            await RejectUntrustedCertificate(port => (HttpClient)getClient.Invoke(executor, new object[] { "http://127.0.0.1:" + port })!, proxy: true);
-        });
         foreach (var type in new[] { typeof(UpdateChecker), typeof(NetworkSpeedTester) })
         {
             await Run("TLS：" + type.Name + " 拒绝不可信服务器证书", async () =>
@@ -83,11 +63,6 @@ internal static class Program
                 await RejectUntrustedCertificate(_ => http);
             });
         }
-        await Run("TLS：原生行情客户端拒绝不可信服务器证书", async () =>
-        {
-            using var http = (HttpClient)typeof(CryptoNative).GetMethod("CreateClient", BindingFlags.Static | BindingFlags.NonPublic)!.Invoke(null, null)!;
-            await RejectUntrustedCertificate(_ => http);
-        });
 
         Console.WriteLine($"发版审查：通过 {_passed} 项，失败 {_failed} 项。");
         return _failed == 0 ? 0 : 1;
@@ -141,94 +116,6 @@ internal static class Program
         var map = new SensorMap();
         map.Rebuild(Computer(gpu), cfg);
         Check(Proxy(gpu).Updates == 1 && map.TryGetSensor("GPU.Load", out _), "首次更新产生的传感器没有映射");
-        return Task.CompletedTask;
-    }
-
-    private static Task AuthTest()
-    {
-        var manager = new WebSessionManager(_ => { });
-        var auth = typeof(WebSessionManager).GetMethod("CheckAuth", Private)!;
-        bool Accept(string target) => (bool)auth.Invoke(manager, new object[] { $"GET {target} HTTP/1.1\r\nHost: localhost\r\n\r\n" })!;
-        try
-        {
-            foreach (var password in new[] { "中文空 格+&=%", "a+b", "a b", "plain" })
-            {
-                Settings.Load().WebServerPassword = password;
-                string encoded = Uri.EscapeDataString(password);
-                Check(Accept("/api/snapshot?pwd=" + encoded), "编码后的密码认证失败");
-                Check(!Accept("/api/snapshot?pwd=wrong"), "错误密码通过认证");
-                Check(!Accept("/api/snapshot?pwd=" + encoded + "&pwd=wrong"), "重复密码参数应拒绝");
-                Check(!Accept("/api/snapshot?other=pwd=" + encoded), "非独立参数通过认证");
-            }
-        }
-        finally { Settings.Load().WebServerPassword = ""; }
-        return Task.CompletedTask;
-    }
-
-    private static async Task PartialHeaderTest()
-    {
-        await WithConnection(async (client, stream, handler) =>
-        {
-            await stream.WriteAsync(Encoding.ASCII.GetBytes("GET /api/snapshot HTTP/1.1\r\nHost: localhost\r\n"));
-            client.Client.Shutdown(SocketShutdown.Send);
-            byte[] buffer = new byte[1024];
-            int count = await stream.ReadAsync(buffer).AsTask().WaitAsync(TimeSpan.FromSeconds(2));
-            Check(count == 0, "未完整请求头不应得到快照数据");
-            await handler.WaitAsync(TimeSpan.FromSeconds(2));
-        });
-    }
-
-    private static async Task HeaderTimeoutTest()
-    {
-        await WithConnection(async (_, stream, handler) =>
-        {
-            await stream.WriteAsync(Encoding.ASCII.GetBytes("GET / HTTP/1.1\r\n"));
-            await handler.WaitAsync(TimeSpan.FromSeconds(7));
-            byte[] buffer = new byte[1];
-            Check(await stream.ReadAsync(buffer).AsTask().WaitAsync(TimeSpan.FromSeconds(1)) == 0, "截止时间后连接未释放");
-        });
-    }
-
-    private static async Task HeaderSizeTest()
-    {
-        await WithConnection(async (_, stream, handler) =>
-        {
-            await stream.WriteAsync(Encoding.ASCII.GetBytes("GET /api/snapshot HTTP/1.1\r\nPadding: " + new string('a', 8192)));
-            await handler.WaitAsync(TimeSpan.FromSeconds(2));
-            byte[] buffer = new byte[1];
-            try { Check(await stream.ReadAsync(buffer).AsTask().WaitAsync(TimeSpan.FromSeconds(1)) == 0, "超长请求不应得到快照数据"); }
-            catch (IOException) { }
-        });
-    }
-
-    private static async Task WithConnection(Func<TcpClient, NetworkStream, Task, Task> test)
-    {
-        var listener = new TcpListener(IPAddress.Loopback, 0);
-        listener.Start();
-        using var client = new TcpClient();
-        await client.ConnectAsync((IPEndPoint)listener.LocalEndpoint);
-        using var accepted = await listener.AcceptTcpClientAsync();
-        var manager = new WebSessionManager(w => { w.WriteStartObject(); w.WriteEndObject(); });
-        var handler = manager.HandleClientAsync(accepted);
-        try { await test(client, client.GetStream(), handler); }
-        finally
-        {
-            client.Close();
-            listener.Stop();
-            manager.Stop();
-            await handler.WaitAsync(TimeSpan.FromSeconds(2));
-        }
-    }
-
-    private static Task StockTest()
-    {
-        var template = JsonSerializer.Deserialize<PluginTemplate>(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Stock.json")))!;
-        foreach (var (input, expected) in new[] { ("us.NDX", "usNDX"), ("usBABA.N", "usBABA"), ("usAAPL.O", "usAAPL"), ("sh600519", "sh600519") })
-        {
-            var context = new Dictionary<string, string> { ["code"] = input };
-            PluginProcessor.ApplyTransforms(template.Execution.Steps![0].Process!, context);
-            Check(context["code"] == expected, "股票代码清洗错误：" + input);
-        }
         return Task.CompletedTask;
     }
 

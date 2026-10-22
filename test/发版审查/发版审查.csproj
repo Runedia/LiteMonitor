@@ -8,7 +8,5 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../LiteMonitor.csproj" />
-    <Content Include="../../resources/plugins/Stock.json" Link="Stock.json" CopyToOutputDirectory="Always" />
-  </ItemGroup>
+    <ProjectReference Include="../../LiteMonitor.csproj" />  </ItemGroup>
 </Project>

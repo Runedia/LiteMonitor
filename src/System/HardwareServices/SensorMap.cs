@@ -123,7 +123,7 @@ namespace LiteMonitor.src.SystemServices
 
             string preferredGpu = cfg.PreferredGpu ?? "";
             IHardware? selectedGpu = HardwareScanner.FindGpuByConfig(computer, preferredGpu);
-            bool shouldWarmGpuForMapping = cfg.IsAnyEnabled("GPU") || cfg.WebServerEnabled;
+            bool shouldWarmGpuForMapping = cfg.IsAnyEnabled("GPU");
 
             // 局部递归函数
             void RegisterTo(IHardware hw)

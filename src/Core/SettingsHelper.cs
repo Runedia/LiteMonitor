@@ -259,12 +259,7 @@ namespace LiteMonitor
                     // 1. Is it a standard item?
                     if (whitelist.Contains(item.Key)) continue;
 
-                    // 2. Is it a valid Plugin item? 
-                    // [Safety] 只要是 DASH. 开头，一律保留，防止误删用户自定义的简单插件
-                    if (item.Key.StartsWith("DASH.", StringComparison.OrdinalIgnoreCase))
-                    {
-                        continue; // 保留所有 DASH.*
-                    }
+                    // 插件功能已移除：旧插件生成的 DASH.* 项也一并清理
                     keysToRemove.Add(item);
                 }
                 
@@ -316,15 +311,6 @@ namespace LiteMonitor
                 // 数据修复：老版本没有 TaskbarSortIndex，默认初始化
                 if (newItem.TaskbarSortIndex == 0) newItem.TaskbarSortIndex = newItem.SortIndex;
             }
-
-            // 3. [Fix] 找回插件项：追加 DASH 开头且不在标准列表中的配置
-            // 必须过滤掉 DASH.HOST/DASH.Time 等标准项，否则会重复！
-            migratedList.AddRange(settings.MonitorItems
-                .Where(x => x.Key.StartsWith("DASH.", StringComparison.OrdinalIgnoreCase) && !standardKeys.Contains(x.Key))
-                .Select(x => { 
-                    if (x.TaskbarSortIndex == 0) x.TaskbarSortIndex = x.SortIndex; 
-                    return x; 
-                }));
 
             settings.MonitorItems = migratedList;
         }

@@ -310,7 +310,6 @@ namespace LiteMonitor.src.UI.Helpers
                 case 2: OpenSettings(); break;
                 case 3: OpenTrafficHistory(); break;
                 case 4: CleanMemory(); break;
-                case 5: WebActions.OpenWebMonitor(_cfg); break;
                 case 0: default: ToggleLayoutMode(); break;
             }
         }
