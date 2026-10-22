@@ -405,7 +405,7 @@ namespace LiteMonitor
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("设置面板启动失败: " + ex.Message);
+                    MessageBox.Show("설정 창을 열지 못했습니다: " + ex.Message);
                 }
             };
             menu.Items.Add(itemSettings);
@@ -573,8 +573,8 @@ namespace LiteMonitor
              // === 发现新版本 ===
             if (UpdateChecker.IsUpdateFound)
             {
-                bool isZh = cfg.Language?.ToLower().Contains("zh") == true;
-                string text = isZh ? $"💡发现新版本(v{UpdateChecker.LatestVersionInfo?.latest})" : $"🔄New version(v{UpdateChecker.LatestVersionInfo?.latest})";
+                bool isKo = cfg.Language?.ToLower().Contains("ko") == true;
+                string text = isKo ? $"💡새 버전(v{UpdateChecker.LatestVersionInfo?.latest})" : $"🔄New version(v{UpdateChecker.LatestVersionInfo?.latest})";
                 
                 var updateItem = new ToolStripMenuItem(text);
                 // 鼠标停留提示更新日期与内容摘要 (移除加粗和自定义颜色以解决托盘菜单闪烁问题)

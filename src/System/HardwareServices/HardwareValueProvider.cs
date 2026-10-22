@@ -81,7 +81,7 @@ namespace LiteMonitor.src.SystemServices
 
                 SensorType type = (key == "MOBO.Temp") ? SensorType.Temperature : SensorType.Fan;
 
-                if (!string.IsNullOrEmpty(pref) && !pref.Contains("自动") && !pref.Contains("Auto"))
+                if (!string.IsNullOrEmpty(pref) && !pref.Contains("自动") && !pref.Contains("자동") && !pref.Contains("Auto"))
                 {
                     var s = FindSensorReverse(pref, type);
                     if (s != null) newCache[key] = s;
@@ -140,7 +140,7 @@ namespace LiteMonitor.src.SystemServices
         /// </summary>
         private ISensor? FindSensorReverse(string savedString, SensorType type)
         {
-            if (string.IsNullOrEmpty(savedString) || savedString.Contains("Auto") || savedString.Contains("自动")) 
+            if (string.IsNullOrEmpty(savedString) || savedString.Contains("Auto") || savedString.Contains("自动") || savedString.Contains("자동")) 
                 return null;
 
             int idx = savedString.LastIndexOf('[');
@@ -553,6 +553,7 @@ namespace LiteMonitor.src.SystemServices
             string pref = _cfg.PreferredMoboTemp ?? "";
             return !string.IsNullOrWhiteSpace(pref) &&
                    !pref.Contains("自动", StringComparison.OrdinalIgnoreCase) &&
+                   !pref.Contains("자동", StringComparison.OrdinalIgnoreCase) &&
                    !pref.Contains("Auto", StringComparison.OrdinalIgnoreCase);
         }
 

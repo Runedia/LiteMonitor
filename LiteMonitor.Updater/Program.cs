@@ -29,7 +29,7 @@ namespace LiteMonitor.Updater
 
             if (baseDir == null)
             {
-                LogError(resourcesDir, "[Fatal] 找不到 LiteMonitor.exe，更新终止！");
+                LogError(resourcesDir, "[Fatal] LiteMonitor.exe를 찾을 수 없어 업데이트를 중단합니다.");
                 return;
             }
 
@@ -58,7 +58,7 @@ namespace LiteMonitor.Updater
             }
             catch (Exception ex)
             {
-                LogError(baseDir, "解压失败： " + ex.Message);
+                LogError(baseDir, "압축 해제 실패: " + ex.Message);
                 return;
             }
 
@@ -93,13 +93,13 @@ namespace LiteMonitor.Updater
                     // 使用带重试机制的复制
                     if (!TryCopyFile(srcPath, destPath))
                     {
-                        LogError(baseDir, $"无法覆盖文件 (被占用): {rel}");
+                        LogError(baseDir, $"파일을 덮어쓸 수 없습니다(사용 중): {rel}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                LogError(baseDir, "复制更新文件失败：" + ex.Message);
+                LogError(baseDir, "업데이트 파일 복사 실패: " + ex.Message);
             }
 
             // ===========================================================

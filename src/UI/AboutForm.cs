@@ -14,12 +14,12 @@ namespace LiteMonitor
         public AboutForm()
         {
             // === 1. 语言判断与文案准备 ===
-            bool isZh = LanguageManager.CurrentLang == "zh";
+            bool isKo = LanguageManager.CurrentLang == "ko";
 
             string strTitle = LanguageManager.T("Menu.About");
-            string strDesc = isZh ? "一款开源的轻量级硬件监控软件。\n© 2025 Diorser / LiteMonitor Project" 
+            string strDesc = isKo ? "오픈 소스 경량 하드웨어 모니터링 프로그램입니다.\n© 2025 Diorser / LiteMonitor Project" 
                                   : "A lightweight desktop hardware monitor.\n© 2025 Diorser / LiteMonitor Project";
-            string strWebPrefix = isZh ? "官网" : "Website";
+            string strWebPrefix = isKo ? "공식 사이트" : "Website";
             string strUpdate = LanguageManager.T("Menu.CheckUpdate");
             string strClose = LanguageManager.T("Menu.OK");
             string strBug = LanguageManager.T("Menu.Feedback");

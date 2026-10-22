@@ -93,32 +93,32 @@ namespace LiteMonitor.ThemeEditor
 
             _groups.Add(new GroupLayoutInfo("CPU", new()
             {
-                new MetricItem { Key = "CPU.Load", Value = 23, DisplayValue = 23, Label = "CPU 使用率" },
-                new MetricItem { Key = "CPU.Temp", Value = 65, DisplayValue = 65, Label = "CPU 温度" }
+                new MetricItem { Key = "CPU.Load", Value = 23, DisplayValue = 23, Label = "CPU 사용률" },
+                new MetricItem { Key = "CPU.Temp", Value = 65, DisplayValue = 65, Label = "CPU 온도" }
             }));
 
             _groups.Add(new GroupLayoutInfo("GPU", new()
             {
-                new MetricItem { Key = "GPU.Load", Value = 90, DisplayValue = 90, Label = "GPU 使用率" },
-                new MetricItem { Key = "GPU.Temp", Value = 65, DisplayValue = 65, Label = "GPU 温度" },
-                new MetricItem { Key = "GPU.VRAM", Value = 41, DisplayValue = 41, Label = "VRAM 占用" }
+                new MetricItem { Key = "GPU.Load", Value = 90, DisplayValue = 90, Label = "GPU 사용률" },
+                new MetricItem { Key = "GPU.Temp", Value = 65, DisplayValue = 65, Label = "GPU 온도" },
+                new MetricItem { Key = "GPU.VRAM", Value = 41, DisplayValue = 41, Label = "VRAM 사용량" }
             }));
 
             _groups.Add(new GroupLayoutInfo("MEM", new()
             {
-                new MetricItem { Key = "MEM.Load", Value = 68, DisplayValue = 68, Label = "内存占用" }
+                new MetricItem { Key = "MEM.Load", Value = 68, DisplayValue = 68, Label = "메모리 사용량" }
             }));
 
             _groups.Add(new GroupLayoutInfo("DISK", new()
             {
-                new MetricItem { Key = "DISK.Read", Value = 1024 * 500, Label = "磁盘读取" },
-                new MetricItem { Key = "DISK.Write", Value = 1024 * 3320, Label = "磁盘写入" }
+                new MetricItem { Key = "DISK.Read", Value = 1024 * 500, Label = "디스크 읽기" },
+                new MetricItem { Key = "DISK.Write", Value = 1024 * 3320, Label = "디스크 쓰기" }
             }));
 
             _groups.Add(new GroupLayoutInfo("NET", new()
             {
-                new MetricItem { Key = "NET.Up", Value = 1024 * 80, Label = "上传速度" },
-                new MetricItem { Key = "NET.Down", Value = 1024 * 38000, Label = "下载速度" }
+                new MetricItem { Key = "NET.Up", Value = 1024 * 80, Label = "업로드 속도" },
+                new MetricItem { Key = "NET.Down", Value = 1024 * 38000, Label = "다운로드 속도" }
             }));
 
             if (_layout != null)

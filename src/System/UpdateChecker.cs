@@ -93,10 +93,10 @@ namespace LiteMonitor
                     if (showMessage)
                     {
                         // 根据当前语言设置显示中文或英文版本
-                        if (LanguageManager.CurrentLang == "zh")
+                        if (LanguageManager.CurrentLang == "ko")
                         {
-                            MessageBox.Show("无法连接到更新服务器，请稍后重试。",
-                                "检查更新", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show("업데이트 서버에 연결할 수 없습니다. 잠시 후 다시 시도하세요.",
+                                "업데이트 확인", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                         else
                         {
@@ -126,13 +126,13 @@ namespace LiteMonitor
                     var sortedUrls = await GetSortedZipUrls(latest);
 
                     // ---- 加载设置并弹出更新窗口 ----
-                    bool isZh = settings?.Language?.ToLower() == "zh";
+                    bool isKo = settings?.Language?.ToLower() == "ko";
 
                     var context = new DownloadContext
                     {
-                        Title = isZh ? "发现新版本！" : "New Version!",
+                        Title = isKo ? "새 버전이 있습니다!" : "New Version!",
                         VersionLabel = $"⚡️LiteMonitor_v{latest}",
-                        Description = $"更新日志：\n{changelog} \n更新日期：\n{releaseDate}\n\n官网：https://litemonitor.cn \nGitHub：https://github.com/Diorser/LiteMonitor",
+                        Description = $"변경 사항:\n{changelog} \n배포일:\n{releaseDate}\n\n공식 사이트: https://litemonitor.cn \nGitHub: https://github.com/Diorser/LiteMonitor",
                         Urls = sortedUrls.ToArray(),
                         SavePath = Path.Combine(AppContext.BaseDirectory, "resources", "update.zip"),
                         ActionButtonText = "Update",
@@ -149,9 +149,9 @@ namespace LiteMonitor
                     if (showMessage)
                     {
                         // 根据当前语言设置显示中文或英文版本
-                        if (LanguageManager.CurrentLang == "zh")
+                        if (LanguageManager.CurrentLang == "ko")
                         {
-                            MessageBox.Show($"当前已是最新版本 ：v{current}\n发布日期：{releaseDate}", "检查更新", 
+                            MessageBox.Show($"이미 최신 버전입니다: v{current}\n배포일: {releaseDate}", "업데이트 확인", 
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
@@ -168,10 +168,10 @@ namespace LiteMonitor
                 if (showMessage)
                 {
                     // 根据当前语言设置显示中文或英文版本
-                    if (LanguageManager.CurrentLang == "zh")
+                    if (LanguageManager.CurrentLang == "ko")
                     {
-                        MessageBox.Show("检查更新失败，可能是网络问题。", 
-                            "检查更新失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("업데이트 확인에 실패했습니다. 네트워크 문제일 수 있습니다.", 
+                            "업데이트 확인 실패", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                     else
                     {

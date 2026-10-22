@@ -368,7 +368,7 @@ namespace LiteMonitor.src.UI.Helpers
             {
                 try { File.Delete(tokenPath); } catch { }
                 string title = "⚡️LiteMonitor_v" + UpdateChecker.GetCurrentVersion();
-                string content = _cfg.Language == "zh" ? "🎉 软件已成功更新到最新版本！" : "🎉 Software updated to latest version!";
+                string content = _cfg.Language == "ko" ? "🎉 최신 버전으로 업데이트되었습니다!" : "🎉 Software updated to latest version!";
                 ShowNotification(title, content, ToolTipIcon.Info);
             }
         }

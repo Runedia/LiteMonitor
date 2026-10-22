@@ -231,7 +231,7 @@ namespace LiteMonitor.src.UI
             {
                 // 自动纠正：如果所有可交互入口都被封死（隐藏或穿透+隐藏托盘），强制显示托盘
                 _draftCfg.HideTrayIcon = false;
-                MessageBox.Show("为了防止所有可交互入口都被死锁（隐藏或穿透+隐藏托盘），已强制显示托盘图标。", "LiteMonitor", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("모든 조작 경로가 막히지 않도록(숨김 또는 클릭 통과 + 트레이 숨김) 트레이 아이콘을 강제로 표시했습니다.", "LiteMonitor", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
             // 2. 合并变更到 Live Settings

@@ -120,11 +120,10 @@ namespace LiteMonitor
         public MainForm()
         {
             // 语言加载
+            // 首次运行固定使用韩语，可在设置中切换
             if (string.IsNullOrEmpty(_cfg.Language))
             {
-                string sysLang = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.ToLower();
-                string langPath = Path.Combine(AppContext.BaseDirectory, "resources/lang", $"{sysLang}.json");
-                _cfg.Language = File.Exists(langPath) ? sysLang : "en";
+                _cfg.Language = "ko";
             }
             LanguageManager.Load(_cfg.Language);
             _cfg.SyncToLanguage();

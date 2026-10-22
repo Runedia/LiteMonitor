@@ -254,14 +254,14 @@ namespace LiteMonitor.src.SystemServices.InfoService
 
                 if (ts.TotalDays < 1)
                 {
-                    _lastUptimeStr = LanguageManager.CurrentLang == "zh"
-                        ? $"{ts.Hours}时 {ts.Minutes}分"
+                    _lastUptimeStr = LanguageManager.CurrentLang == "ko"
+                        ? $"{ts.Hours}시간 {ts.Minutes}분"
                         : $"{ts.Hours}h {ts.Minutes}m";
                 }
                 else
                 {
-                    _lastUptimeStr = LanguageManager.CurrentLang == "zh"
-                        ? $"{(int)ts.TotalDays}天 {ts.Hours}时 {ts.Minutes}分"
+                    _lastUptimeStr = LanguageManager.CurrentLang == "ko"
+                        ? $"{(int)ts.TotalDays}일 {ts.Hours}시간 {ts.Minutes}분"
                         : $"{(int)ts.TotalDays}d {ts.Hours}h {ts.Minutes}m";
                 }
                 

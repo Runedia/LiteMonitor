@@ -50,7 +50,7 @@ namespace LiteMonitor.src.SystemServices
         private static bool _startupPawnIOCheckSawPendingDriver;
         private static bool _runtimeLegacyPawnIOPromptShown;
 
-        private bool IsChinese => _cfg?.Language?.ToLower() == "zh";
+        private bool IsKorean => _cfg?.Language?.ToLower() == "ko";
 
         public DriverInstaller(Settings cfg, Action? onReloadRequired, Action? onPrepareDriverInstall)
         {
@@ -76,11 +76,10 @@ namespace LiteMonitor.src.SystemServices
 
         private static void PrepareLanguageForDialog(Settings cfg)
         {
+            // 首次运行固定使用韩语，可在设置中切换
             if (string.IsNullOrEmpty(cfg.Language))
             {
-                string sysLang = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.ToLower();
-                string langPath = Path.Combine(AppContext.BaseDirectory, "resources/lang", $"{sysLang}.json");
-                cfg.Language = File.Exists(langPath) ? sysLang : "en";
+                cfg.Language = "ko";
             }
 
             LanguageManager.Load(cfg.Language);
@@ -143,10 +142,10 @@ namespace LiteMonitor.src.SystemServices
                     if (!_runtimeLegacyPawnIOPromptShown && !_startupPawnIOCheckSawPendingDriver)
                     {
                         _runtimeLegacyPawnIOPromptShown = true;
-                        ShowMessageBox(IsChinese
-                                ? "检测到 PawnIO 驱动版本过旧，当前运行状态下不会卸载驱动。\n请重启 LiteMonitor，并在启动时完成驱动升级。"
+                        ShowMessageBox(IsKorean
+                                ? "PawnIO 드라이버 버전이 오래되었습니다. 실행 중에는 드라이버를 제거하지 않습니다.\nLiteMonitor를 다시 시작하여 시작 시 드라이버 업그레이드를 완료하세요."
                                 : "An older PawnIO driver was detected. LiteMonitor will not uninstall the driver while running.\nPlease restart LiteMonitor and complete the driver update during startup.",
-                            IsChinese ? "需要重启软件" : "Restart LiteMonitor Required",
+                            IsKorean ? "프로그램 재시작 필요" : "Restart LiteMonitor Required",
                             MessageBoxIcon.Information);
                     }
 
@@ -200,14 +199,14 @@ namespace LiteMonitor.src.SystemServices
             
             var context = new DownloadContext
             {
-                Title = IsChinese ? "检测到缺失FPS组件" : "FPS Monitor Component Missing",
-                Description = IsChinese 
-                    ? "您开启了FPS监控，但检测到 FPS 监控组件缺失。\n需要安装该组件来支持 FPS 帧率显示功能。\n点击“立即安装”自动获取并安装。"
+                Title = IsKorean ? "FPS 구성 요소 없음" : "FPS Monitor Component Missing",
+                Description = IsKorean 
+                    ? "FPS 모니터링을 켰지만 FPS 모니터링 구성 요소가 없습니다.\nFPS 표시 기능을 사용하려면 이 구성 요소를 설치해야 합니다.\n'지금 설치'를 누르면 자동으로 받아 설치합니다."
                     : "FPS Monitor Component Missing.\nLiteMonitor needs to download an additional component to support FPS monitoring.\nClick 'Install' to proceed.",
                 Urls = _presentMonUrls,
                 SavePath = targetPath,
                 ActionButtonText = "Install",
-                VersionLabel = IsChinese ? "请安装FPS组件" : "Install FPS Component"
+                VersionLabel = IsKorean ? "FPS 구성 요소를 설치하세요" : "Install FPS Component"
             };
 
             if (!await ShowDownloadDialog(context)) return false;
@@ -216,8 +215,8 @@ namespace LiteMonitor.src.SystemServices
             if (!IsValidExecutable(targetPath))
             {
                 try { File.Delete(targetPath); } catch { }
-                ShowMessageBox(IsChinese ? "下载的文件校验失败(大小或格式错误)，可能是下载源失效。" : "Downloaded file verification failed.",
-                               IsChinese ? "校验失败" : "Verification Failed", MessageBoxIcon.Error);
+                ShowMessageBox(IsKorean ? "다운로드한 파일 검증에 실패했습니다(크기 또는 형식 오류). 다운로드 서버에 문제가 있을 수 있습니다." : "Downloaded file verification failed.",
+                               IsKorean ? "검증 실패" : "Verification Failed", MessageBoxIcon.Error);
                 return false;
             }
 
@@ -302,8 +301,8 @@ namespace LiteMonitor.src.SystemServices
             }
             catch (Exception ex)
             {
-                ShowMessageBox(IsChinese ? $"驱动包解压失败: {ex.Message}" : $"Failed to extract driver package: {ex.Message}", 
-                               IsChinese ? "解压失败" : "Extraction Failed", MessageBoxIcon.Error);
+                ShowMessageBox(IsKorean ? $"드라이버 패키지 압축 해제 실패: {ex.Message}" : $"Failed to extract driver package: {ex.Message}", 
+                               IsKorean ? "압축 해제 실패" : "Extraction Failed", MessageBoxIcon.Error);
                 return false;
             }
         }
@@ -324,8 +323,8 @@ namespace LiteMonitor.src.SystemServices
             // 校验
             if (!IsValidExecutable(setupPath))
             {
-                ShowMessageBox(IsChinese ? "PawnIO 安装包校验失败(文件损坏)。" : "PawnIO installer verification failed.", 
-                               IsChinese ? "校验失败" : "Verification Failed", MessageBoxIcon.Error);
+                ShowMessageBox(IsKorean ? "PawnIO 설치 파일 검증에 실패했습니다(파일 손상)." : "PawnIO installer verification failed.", 
+                               IsKorean ? "검증 실패" : "Verification Failed", MessageBoxIcon.Error);
                 try { File.Delete(setupPath); } catch { }
                 return false;
             }
@@ -348,18 +347,18 @@ namespace LiteMonitor.src.SystemServices
                     _pawnIORestartRequiredThisSession = true;
                     _shouldExitAfterDriverOperation = true;
                     try { File.Delete(setupPath); } catch { }
-                    ShowPawnIORestartRequiredMessage(IsChinese
-                        ? "旧版 PawnIO 驱动已开始卸载，但 Windows 需要重启后才能继续安装新版驱动。"
+                    ShowPawnIORestartRequiredMessage(IsKorean
+                        ? "이전 PawnIO 드라이버 제거를 시작했지만, 새 드라이버를 설치하려면 Windows를 다시 시작해야 합니다."
                         : "The old PawnIO driver started uninstalling, but Windows needs a restart before installing the new driver.");
                     return false;
                 }
 
                 if (uninstallResult != DriverOperationResult.Success)
                 {
-                    ShowMessageBox(IsChinese
-                            ? "旧版 PawnIO 驱动自动卸载失败，本次不会继续安装新版驱动。\n请重启电脑后再打开 LiteMonitor 重试。"
+                    ShowMessageBox(IsKorean
+                            ? "이전 PawnIO 드라이버를 자동으로 제거하지 못해 새 드라이버 설치를 진행하지 않습니다.\n컴퓨터를 다시 시작한 뒤 LiteMonitor를 열어 다시 시도하세요."
                             : "Failed to uninstall the old PawnIO driver. The new driver will not be installed now.\nPlease restart Windows and open LiteMonitor again.",
-                        IsChinese ? "驱动更新失败" : "Driver Update Failed",
+                        IsKorean ? "드라이버 업데이트 실패" : "Driver Update Failed",
                         MessageBoxIcon.Warning);
                     return false;
                 }
@@ -383,8 +382,8 @@ namespace LiteMonitor.src.SystemServices
                 if (mode == DriverInstallMode.StartupBeforeHardware)
                     _shouldExitAfterDriverOperation = true;
                 try { File.Delete(setupPath); } catch { }
-                ShowPawnIORestartRequiredMessage(IsChinese
-                    ? "PawnIO 驱动更新已完成，但需要重启电脑后才能生效。"
+                ShowPawnIORestartRequiredMessage(IsKorean
+                    ? "PawnIO 드라이버 업데이트가 완료되었습니다. 적용하려면 컴퓨터를 다시 시작해야 합니다."
                     : "PawnIO driver update completed, but Windows needs a restart before it takes effect.");
                 return true;
             }
@@ -394,8 +393,8 @@ namespace LiteMonitor.src.SystemServices
                 _pawnIORestartRequiredThisSession = true;
                 if (mode == DriverInstallMode.StartupBeforeHardware)
                     _shouldExitAfterDriverOperation = true;
-                ShowPawnIORestartRequiredMessage(IsChinese
-                    ? "PawnIO 驱动仍处于上一次更新未完成的状态，Windows 需要重启后才能继续安装新版驱动。"
+                ShowPawnIORestartRequiredMessage(IsKorean
+                    ? "PawnIO 드라이버의 이전 업데이트가 아직 끝나지 않았습니다. 새 드라이버를 설치하려면 Windows를 다시 시작해야 합니다."
                     : "PawnIO is still in a pending driver update state. Windows needs a restart before installing the new driver.");
                 return false;
             }
@@ -406,16 +405,16 @@ namespace LiteMonitor.src.SystemServices
                 {
                     _pawnIORestartRequiredThisSession = true;
                     _shouldExitAfterDriverOperation = true;
-                    ShowPawnIORestartRequiredMessage(IsChinese
-                        ? "旧版 PawnIO 驱动仍被 Windows 保留，暂时无法覆盖安装新版驱动。"
+                    ShowPawnIORestartRequiredMessage(IsKorean
+                        ? "Windows가 이전 PawnIO 드라이버를 아직 사용 중이라 새 드라이버를 덮어 설치할 수 없습니다."
                         : "The old PawnIO driver is still retained by Windows, so the new driver cannot be installed yet.");
                 }
                 else
                 {
-                    ShowMessageBox(IsChinese
-                            ? "检测到旧版 PawnIO 驱动仍存在，当前运行状态下无法覆盖升级。\n请重启软件，让 LiteMonitor 在启动前完成驱动升级。"
+                    ShowMessageBox(IsKorean
+                            ? "이전 PawnIO 드라이버가 남아 있어 실행 중에는 업그레이드할 수 없습니다.\nLiteMonitor를 다시 시작하여 시작 전에 드라이버 업그레이드를 완료하세요."
                             : "An older PawnIO driver already exists and cannot be upgraded while LiteMonitor is running.\nPlease restart LiteMonitor so the driver can be updated before hardware monitoring starts.",
-                        IsChinese ? "需要重新启动软件" : "Restart LiteMonitor Required",
+                        IsKorean ? "프로그램 재시작 필요" : "Restart LiteMonitor Required",
                         MessageBoxIcon.Warning);
                 }
 
@@ -427,20 +426,20 @@ namespace LiteMonitor.src.SystemServices
                 if (legacyUninstalled)
                 {
                     _shouldExitAfterDriverOperation = true;
-                    ShowMessageBox(IsChinese
-                            ? "旧版 PawnIO 驱动已卸载，但新版驱动安装失败。\n请重启电脑后再打开 LiteMonitor 重试。"
+                    ShowMessageBox(IsKorean
+                            ? "이전 PawnIO 드라이버는 제거했지만 새 드라이버 설치에 실패했습니다.\n컴퓨터를 다시 시작한 뒤 LiteMonitor를 열어 다시 시도하세요."
                             : "The old PawnIO driver was uninstalled, but the new driver installation failed.\nPlease restart Windows and open LiteMonitor again.",
-                        IsChinese ? "驱动更新未完成" : "Driver Update Incomplete",
+                        IsKorean ? "드라이버 업데이트 미완료" : "Driver Update Incomplete",
                         MessageBoxIcon.Warning);
                     return false;
                 }
 
                 // 失败处理：引导手动安装
-                string msg = IsChinese
-                    ? "PawnIO 驱动自动安装失败。\n是否立即启动手动安装？"
+                string msg = IsKorean
+                    ? "PawnIO 드라이버 자동 설치에 실패했습니다.\n지금 수동 설치를 시작할까요?"
                     : "PawnIO driver installation failed.\nLaunch manual installation now?";
                 
-                if (MessageBox.Show(msg, IsChinese ? "需要协助" : "Help", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show(msg, IsKorean ? "도움 필요" : "Help", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     DriverOperationResult manualResult = await RunPawnIOInstaller(setupPath, silent: false);
                     
@@ -450,8 +449,8 @@ namespace LiteMonitor.src.SystemServices
                         if (mode == DriverInstallMode.StartupBeforeHardware)
                             _shouldExitAfterDriverOperation = true;
                         try { File.Delete(setupPath); } catch { }
-                        ShowPawnIORestartRequiredMessage(IsChinese
-                            ? "PawnIO 驱动安装已完成，但需要重启电脑后才能生效。"
+                        ShowPawnIORestartRequiredMessage(IsKorean
+                            ? "PawnIO 드라이버 설치가 완료되었습니다. 적용하려면 컴퓨터를 다시 시작해야 합니다."
                             : "PawnIO driver installation completed, but Windows needs a restart before it takes effect.");
                         return true;
                     }
@@ -461,24 +460,24 @@ namespace LiteMonitor.src.SystemServices
                         _pawnIORestartRequiredThisSession = true;
                         if (mode == DriverInstallMode.StartupBeforeHardware)
                             _shouldExitAfterDriverOperation = true;
-                        ShowPawnIORestartRequiredMessage(IsChinese
-                            ? "PawnIO 驱动仍处于上一次更新未完成的状态，Windows 需要重启后才能继续安装新版驱动。"
+                        ShowPawnIORestartRequiredMessage(IsKorean
+                            ? "PawnIO 드라이버의 이전 업데이트가 아직 끝나지 않았습니다. 새 드라이버를 설치하려면 Windows를 다시 시작해야 합니다."
                             : "PawnIO is still in a pending driver update state. Windows needs a restart before installing the new driver.");
                         return false;
                     }
 
                     if (manualResult == DriverOperationResult.Success || IsPawnIOReadyAfterInstall())
                     {
-                        ShowMessageBox(IsChinese ? "PawnIO 驱动已安装。请重启软件。" : "PawnIO driver installed. Please restart.", 
-                                       IsChinese ? "安装成功" : "Success", MessageBoxIcon.Information);
+                        ShowMessageBox(IsKorean ? "PawnIO 드라이버가 설치되었습니다. 프로그램을 다시 시작하세요." : "PawnIO driver installed. Please restart.", 
+                                       IsKorean ? "설치 완료" : "Success", MessageBoxIcon.Information);
                         try { File.Delete(setupPath); } catch { }
                         _onReloadRequired?.Invoke();
                         return true;
                     }
                     else
                     {
-                        ShowMessageBox(IsChinese ? "未检测到驱动安装。请重启尝试。" : "Driver not detected. Please restart.", 
-                                       IsChinese ? "未完成" : "Not Completed", MessageBoxIcon.Warning);
+                        ShowMessageBox(IsKorean ? "드라이버 설치를 확인하지 못했습니다. 다시 시작한 뒤 시도하세요." : "Driver not detected. Please restart.", 
+                                       IsKorean ? "미완료" : "Not Completed", MessageBoxIcon.Warning);
                     }
                 }
 
@@ -489,8 +488,8 @@ namespace LiteMonitor.src.SystemServices
             {
                 // 成功处理
                 try { File.Delete(setupPath); } catch { }
-                ShowMessageBox(IsChinese ? "PawnIO 驱动安装成功！\n 稍后软件将自动恢复CPU温度等数据监控" : "PawnIO driver installed!\nCPU temperature monitoring will be restored automatically.", 
-                               IsChinese ? "成功" : "Success", MessageBoxIcon.Information);
+                ShowMessageBox(IsKorean ? "PawnIO 드라이버 설치 완료!\n잠시 후 CPU 온도 등 모니터링이 자동으로 복구됩니다." : "PawnIO driver installed!\nCPU temperature monitoring will be restored automatically.", 
+                               IsKorean ? "완료" : "Success", MessageBoxIcon.Information);
                 _onReloadRequired?.Invoke();
                 return true;
             }
@@ -618,9 +617,9 @@ namespace LiteMonitor.src.SystemServices
         private string GetPawnIODialogTitle(PawnIOCheckResult check)
         {
             if (check.Status == PawnIOCheckStatus.Outdated)
-                return IsChinese ? "检测到 PawnIO 驱动版本较旧" : "PawnIO Driver Update Available";
+                return IsKorean ? "PawnIO 드라이버 업데이트 필요" : "PawnIO Driver Update Available";
 
-            return IsChinese ? "检测到电脑缺失CPU依赖驱动" : "PawnIO Driver Missing";
+            return IsKorean ? "CPU 모니터링 드라이버 없음" : "PawnIO Driver Missing";
         }
 
         private string GetPawnIODialogDescription(PawnIOCheckResult check)
@@ -628,29 +627,29 @@ namespace LiteMonitor.src.SystemServices
             if (check.Status == PawnIOCheckStatus.Outdated)
             {
                 string currentVersion = GetInstalledPawnIOVersionText(check);
-                return IsChinese
-                    ? $"当前 PawnIO 驱动版本为 {currentVersion}，建议更新到 {RequiredPawnIOVersion}。\n旧版驱动可能导致 CPU 温度/频率/功耗等数据异常。\n点击“立即安装”自动获取并更新（约3MB）。\n\n安装完成后即可自动恢复CPU监控等功能。"
+                return IsKorean
+                    ? $"현재 PawnIO 드라이버 버전은 {currentVersion}입니다. {RequiredPawnIOVersion}(으)로 업데이트를 권장합니다.\n이전 드라이버는 CPU 온도/클럭/전력 값이 비정상일 수 있습니다.\n'지금 설치'를 누르면 자동으로 받아 업데이트합니다(약 3MB).\n\n설치가 끝나면 CPU 모니터링이 자동으로 복구됩니다."
                     : $"Current PawnIO driver version is {currentVersion}. Please update to {RequiredPawnIOVersion}.\nOlder drivers may cause abnormal CPU temperature, frequency, or power readings.\nClick 'Install' to update.";
             }
 
-            return IsChinese
-                ? "电脑缺失CPU的PawnIO驱动\n软件将无法获取CPU的温度/频率/功耗等数据 \n点击“立即安装”自动获取并安装（约3MB）\n\n安装完成后即可自动恢复CPU监控等功能。"
+            return IsKorean
+                ? "CPU용 PawnIO 드라이버가 없습니다.\nCPU 온도/클럭/전력 값을 읽을 수 없습니다.\n'지금 설치'를 누르면 자동으로 받아 설치합니다(약 3MB).\n\n설치가 끝나면 CPU 모니터링이 자동으로 복구됩니다."
                 : "LiteMonitor needs to install the driver to monitor CPU temperature, frequency, and power consumption.\nClick 'Install' to install.";
         }
 
         private string GetPawnIOVersionLabel(PawnIOCheckResult check)
         {
             if (check.Status == PawnIOCheckStatus.Outdated)
-                return IsChinese ? $"更新 PawnIO 驱动至 {RequiredPawnIOVersion}" : $"Update PawnIO Driver to {RequiredPawnIOVersion}";
+                return IsKorean ? $"PawnIO 드라이버를 {RequiredPawnIOVersion}(으)로 업데이트" : $"Update PawnIO Driver to {RequiredPawnIOVersion}";
 
-            return IsChinese ? "请安装PawnIO驱动" : "Install PawnIO Driver";
+            return IsKorean ? "PawnIO 드라이버를 설치하세요" : "Install PawnIO Driver";
         }
 
         private string GetInstalledPawnIOVersionText(PawnIOCheckResult check)
         {
             if (!string.IsNullOrWhiteSpace(check.Installation.VersionText)) return check.Installation.VersionText!;
             if (check.Installation.Version != null) return check.Installation.Version.ToString();
-            return IsChinese ? "未知" : "Unknown";
+            return IsKorean ? "알 수 없음" : "Unknown";
         }
 
         private bool IsValidExecutable(string path)
@@ -743,10 +742,10 @@ namespace LiteMonitor.src.SystemServices
 
         private void ShowPawnIORestartRequiredMessage(string description)
         {
-            ShowMessageBox(description + (IsChinese
-                    ? "\n请重启电脑后再打开 LiteMonitor。"
+            ShowMessageBox(description + (IsKorean
+                    ? "\n컴퓨터를 다시 시작한 뒤 LiteMonitor를 여세요."
                     : "\nPlease restart Windows before opening LiteMonitor again."),
-                IsChinese ? "需要重启" : "Restart Required",
+                IsKorean ? "재시작 필요" : "Restart Required",
                 MessageBoxIcon.Information);
         }
 
