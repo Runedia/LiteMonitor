@@ -43,7 +43,7 @@ namespace LiteMonitor
 
         public float? Threshold { get; set; }
         public string Title { get; set; } = "";
-        public string EmptyText { get; set; } = "暂无历史数据";
+        public string EmptyText { get; set; } = "기록 데이터 없음";
         public string? HighlightKey => _highlightKey;
 
         public TrendChartControl()

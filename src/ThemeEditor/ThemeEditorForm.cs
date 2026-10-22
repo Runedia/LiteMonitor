@@ -90,15 +90,15 @@ namespace LiteMonitor.ThemeEditor
             pageColors = new Panel { AutoScroll = true, Dock = DockStyle.Fill };
             
             
-            var tpColors = new TabPage(" 颜色 / Colors ");
+            var tpColors = new TabPage(" 색상 / Colors ");
             tpColors.Controls.Add(pageColors);
             tab.TabPages.Add(tpColors);
 
-            var tpFont = new TabPage(" 字体 / Font ");
+            var tpFont = new TabPage(" 글꼴 / Font ");
             tpFont.Controls.Add(pageFont);
             tab.TabPages.Add(tpFont);
 
-            var tpLayout = new TabPage(" 界面布局 / Layout ");
+            var tpLayout = new TabPage(" 레이아웃 / Layout ");
             tpLayout.Controls.Add(pageLayout);
             tab.TabPages.Add(tpLayout);
 
@@ -134,20 +134,20 @@ namespace LiteMonitor.ThemeEditor
             leftPanel.Controls.Add(lstThemes);
 
             
-            btnDelete = new Button { Text = "删除主题 / Delete Theme", Dock = DockStyle.Top, Height = (int)(40 * dpiScale) };
+            btnDelete = new Button { Text = "테마 삭제 / Delete Theme", Dock = DockStyle.Top, Height = (int)(40 * dpiScale) };
             btnDelete.Click += (_, __) => CmdDeleteTheme();
             leftPanel.Controls.Add(btnDelete);
 
-            btnCopy = new Button { Text = "复制主题 / Copy Theme", Dock = DockStyle.Top, Height = (int)(40 * dpiScale) };
+            btnCopy = new Button { Text = "테마 복사 / Copy Theme", Dock = DockStyle.Top, Height = (int)(40 * dpiScale) };
             btnCopy.Click += (_, __) => CmdCopyTheme();
             leftPanel.Controls.Add(btnCopy);
 
-            btnRename = new Button { Text = "重命名主题 / Rename Theme", Dock = DockStyle.Top, Height = (int)(40 * dpiScale) };
+            btnRename = new Button { Text = "테마 이름 변경 / Rename Theme", Dock = DockStyle.Top, Height = (int)(40 * dpiScale) };
             btnRename.Click += (_, __) => CmdRenameTheme();
             leftPanel.Controls.Add(btnRename);
 
              
-            btnNew = new Button { Text = "新建主题 / New Theme", Dock = DockStyle.Top, Height = (int)(40 * dpiScale) };
+            btnNew = new Button { Text = "새 테마 / New Theme", Dock = DockStyle.Top, Height = (int)(40 * dpiScale) };
             btnNew.Click += (_, __) => CmdNewTheme();
             leftPanel.Controls.Add(btnNew);
             
@@ -212,7 +212,7 @@ namespace LiteMonitor.ThemeEditor
             }
             catch (Exception ex)
             {
-                MessageBox.Show("无法加载主题：\n" + ex.Message);
+                MessageBox.Show("테마를 불러올 수 없습니다:\n" + ex.Message);
                 return;
             }
 
@@ -265,7 +265,7 @@ namespace LiteMonitor.ThemeEditor
             //AddNum("界面宽度 / Width (px)", () => L.Width, v => L.Width = v);
             pageLayout.Controls.Add(new Label
             {
-                Text = "说明：窗体圆角设置暂不支持预览 且仅win10下修改圆角有效",
+                Text = "참고: 창 모서리 반경은 미리보기를 지원하지 않으며, Windows 10에서만 적용됩니다",
                 Location = new Point((int)(10 * dpiScale), y),
                 Width = (int)(350 * dpiScale),
                 Height = (int)(20 * dpiScale), // Fix DPI clipping
@@ -273,15 +273,15 @@ namespace LiteMonitor.ThemeEditor
                 Font = new Font("Microsoft YaHei UI", 8f)
             });
             y += (int)(25 * dpiScale);
-            AddNum("窗体圆角 / CornerRadius (px)", () => L.CornerRadius, v => L.CornerRadius = v);
-            AddNum("行高 / RowHeight (px)", () => L.RowHeight, v => L.RowHeight = v);
-            AddNum("内边距 / Padding (px)", () => L.Padding, v => L.Padding = v);
-            AddNum("组块圆角 / GroupRadius (px)", () => L.GroupRadius, v => L.GroupRadius = v);
-            AddNum("组块内边距 / GroupPadding (px)", () => L.GroupPadding, v => L.GroupPadding = v);
-            AddNum("组块间距 / GroupSpacing (px)", () => L.GroupSpacing, v => L.GroupSpacing = v);
-            AddNum("组块底部留白 / GroupBottom (px)", () => L.GroupBottom, v => L.GroupBottom = v);
-            AddNum("监控项间距 / ItemGap (px)", () => L.ItemGap, v => L.ItemGap = v);
-            AddNum("组标题偏移 / GroupTitleOffset (px)", () => L.GroupTitleOffset, v => L.GroupTitleOffset = v);
+            AddNum("창 모서리 반경 / CornerRadius (px)", () => L.CornerRadius, v => L.CornerRadius = v);
+            AddNum("행 높이 / RowHeight (px)", () => L.RowHeight, v => L.RowHeight = v);
+            AddNum("안쪽 여백 / Padding (px)", () => L.Padding, v => L.Padding = v);
+            AddNum("그룹 모서리 반경 / GroupRadius (px)", () => L.GroupRadius, v => L.GroupRadius = v);
+            AddNum("그룹 안쪽 여백 / GroupPadding (px)", () => L.GroupPadding, v => L.GroupPadding = v);
+            AddNum("그룹 간격 / GroupSpacing (px)", () => L.GroupSpacing, v => L.GroupSpacing = v);
+            AddNum("그룹 아래 여백 / GroupBottom (px)", () => L.GroupBottom, v => L.GroupBottom = v);
+            AddNum("항목 간격 / ItemGap (px)", () => L.ItemGap, v => L.ItemGap = v);
+            AddNum("그룹 제목 오프셋 / GroupTitleOffset (px)", () => L.GroupTitleOffset, v => L.GroupTitleOffset = v);
 
             AddSaveButton(pageLayout);
         }
@@ -365,17 +365,17 @@ namespace LiteMonitor.ThemeEditor
 
             var F = _theme.Font;
 
-            AddFontCombo("主字体 / Font Family", () => F.Family, v => F.Family = v);
-            AddFontCombo("数值字体 / Value Font", () => F.ValueFamily, v => F.ValueFamily = v);
+            AddFontCombo("기본 글꼴 / Font Family", () => F.Family, v => F.Family = v);
+            AddFontCombo("값 글꼴 / Value Font", () => F.ValueFamily, v => F.ValueFamily = v);
 
-            AddNum("标题字号 / Title Size (pt)", () => F.Title, v => F.Title = v);
-            AddNum("组标题字号 / GroupTitle Size (pt)", () => F.Group, v => F.Group = v);
-            AddNum("项目字号 / Item Size (pt)", () => F.Item, v => F.Item = v);
-            AddNum("数值字号 / Value Size (pt)", () => F.Value, v => F.Value = v);
+            AddNum("제목 글자 크기 / Title Size (pt)", () => F.Title, v => F.Title = v);
+            AddNum("그룹 제목 글자 크기 / GroupTitle Size (pt)", () => F.Group, v => F.Group = v);
+            AddNum("항목 글자 크기 / Item Size (pt)", () => F.Item, v => F.Item = v);
+            AddNum("값 글자 크기 / Value Size (pt)", () => F.Value, v => F.Value = v);
 
             var chkBold = new CheckBox
             {
-                Text = "加粗 / Bold",   
+                Text = "굵게 / Bold",   
                 Location = new Point((int)(10 * dpiScale), y),
                 Checked = F.Bold
             };
@@ -463,21 +463,21 @@ namespace LiteMonitor.ThemeEditor
 
             var C = _theme.Color;
 
-            AddColor("背景色 / Background", () => C.Background, v => C.Background = v);
-            AddColor("组背景 / GroupBackground", () => C.GroupBackground, v => C.GroupBackground = v);
+            AddColor("배경색 / Background", () => C.Background, v => C.Background = v);
+            AddColor("그룹 배경 / GroupBackground", () => C.GroupBackground, v => C.GroupBackground = v);
 
-            AddColor("标题字体 / TextTitle", () => C.TextTitle, v => C.TextTitle = v);
-            AddColor("组标题字体 / TextGroup", () => C.TextGroup, v => C.TextGroup = v);
-            AddColor("普通字体 / TextPrimary", () => C.TextPrimary, v => C.TextPrimary = v);
+            AddColor("제목 글자색 / TextTitle", () => C.TextTitle, v => C.TextTitle = v);
+            AddColor("그룹 제목 글자색 / TextGroup", () => C.TextGroup, v => C.TextGroup = v);
+            AddColor("일반 글자색 / TextPrimary", () => C.TextPrimary, v => C.TextPrimary = v);
 
-            AddColor("安全值颜色 / ValueSafe", () => C.ValueSafe, v => C.ValueSafe = v);    
-            AddColor("警告值颜色 / ValueWarn", () => C.ValueWarn, v => C.ValueWarn = v);
-            AddColor("严重值颜色 / ValueCrit", () => C.ValueCrit, v => C.ValueCrit = v);
+            AddColor("정상 값 색상 / ValueSafe", () => C.ValueSafe, v => C.ValueSafe = v);    
+            AddColor("경고 값 색상 / ValueWarn", () => C.ValueWarn, v => C.ValueWarn = v);
+            AddColor("위험 값 색상 / ValueCrit", () => C.ValueCrit, v => C.ValueCrit = v);
 
-            AddColor("进度条背景 / BarBackground", () => C.BarBackground, v => C.BarBackground = v);
-            AddColor("进度条低位 / BarLow", () => C.BarLow, v => C.BarLow = v);
-            AddColor("进度条中位 / BarMid", () => C.BarMid, v => C.BarMid = v);
-            AddColor("进度条高位 / BarHigh", () => C.BarHigh, v => C.BarHigh = v);  
+            AddColor("막대 배경 / BarBackground", () => C.BarBackground, v => C.BarBackground = v);
+            AddColor("막대 낮음 / BarLow", () => C.BarLow, v => C.BarLow = v);
+            AddColor("막대 중간 / BarMid", () => C.BarMid, v => C.BarMid = v);
+            AddColor("막대 높음 / BarHigh", () => C.BarHigh, v => C.BarHigh = v);  
 
             AddSaveButton(pageColors);
         }
@@ -491,7 +491,7 @@ namespace LiteMonitor.ThemeEditor
             
             var btn = new Button
             {
-                Text = "保存主题 / Save Theme",
+                Text = "테마 저장 / Save Theme",
                 Width = (int)(200 * dpiScale),
                 Height = (int)(40 * dpiScale),
                 Anchor = AnchorStyles.Bottom | AnchorStyles.Left,
@@ -522,9 +522,9 @@ namespace LiteMonitor.ThemeEditor
                 RefreshMainFormThemeMenu();
 
                 // 合并保存成功和是否应用主题的弹窗
-                var result = MessageBox.Show("主题已保存 / Saved Theme: " + _currentThemeName +
-                    "\n\n是否立即应用此主题？\nApply this theme now?",
-                    "保存成功 / Save Success",
+                var result = MessageBox.Show("테마 저장됨 / Saved Theme: " + _currentThemeName +
+                    "\n\n지금 이 테마를 적용할까요?\nApply this theme now?",
+                    "저장 완료 / Save Success",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
 
@@ -536,8 +536,8 @@ namespace LiteMonitor.ThemeEditor
             }
             catch (Exception ex)
             {
-                MessageBox.Show("保存失败 / Save Failed:\n" + ex.Message,
-                    "错误 / Error",
+                MessageBox.Show("저장 실패 / Save Failed:\n" + ex.Message,
+                    "오류 / Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
@@ -597,7 +597,7 @@ namespace LiteMonitor.ThemeEditor
         // ============================================================
         private void CmdNewTheme()
         {
-            string name = InputBox("输入新主题名称 / New Theme Name:");
+            string name = InputBox("새 테마 이름 입력 / New Theme Name:");
             if (string.IsNullOrWhiteSpace(name)) return;
 
             try
@@ -616,7 +616,7 @@ namespace LiteMonitor.ThemeEditor
         {
             if (_currentThemeName == "") return;
 
-            string name = InputBox("输入新的主题名称 / Rename Theme Name:", _currentThemeName);
+            string name = InputBox("변경할 테마 이름 입력 / Rename Theme Name:", _currentThemeName);
             if (string.IsNullOrWhiteSpace(name)) return;
 
             try
@@ -635,7 +635,7 @@ namespace LiteMonitor.ThemeEditor
         {
             if (_currentThemeName == "") return;
 
-            string name = InputBox("复制的主题名称 / Copy Theme Name:", _currentThemeName + "_copy");
+            string name = InputBox("복사할 테마 이름 / Copy Theme Name:", _currentThemeName + "_copy");
             if (string.IsNullOrWhiteSpace(name)) return;
 
             try
@@ -654,7 +654,7 @@ namespace LiteMonitor.ThemeEditor
         {
             if (_currentThemeName == "") return;
 
-            if (MessageBox.Show($"确定删除主题 / Delete Theme: {_currentThemeName}？", "提示 / Confirm:",
+            if (MessageBox.Show($"테마를 삭제할까요? / Delete Theme: {_currentThemeName}?", "확인 / Confirm:",
                 MessageBoxButtons.YesNo) != DialogResult.Yes)
                 return;
 
@@ -694,7 +694,7 @@ namespace LiteMonitor.ThemeEditor
 
             Button ok = new Button
             {
-                Text = "确定 / OK",
+                Text = "확인 / OK",
                 Left = (int)(80 * dpiScale),
                 Top = (int)(60 * dpiScale),
                 Width = (int)(100 * dpiScale),
@@ -704,7 +704,7 @@ namespace LiteMonitor.ThemeEditor
 
             Button cancel = new Button
             {
-                Text = "取消 / Cancel",
+                Text = "취소 / Cancel",
                 Left = (int)(180 * dpiScale),
                 Top = (int)(60 * dpiScale),
                 Width = (int)(100 * dpiScale),

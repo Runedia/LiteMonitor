@@ -71,7 +71,7 @@ namespace LiteMonitor
                 _scale = g.DpiX / 96.0f;
             }
 
-            this.Text = "流量统计中心 (Traffic Statistics)";
+            this.Text = "트래픽 통계 (Traffic Statistics)";
             this.Size = new Size(S(840), S(650));
             this.MinimumSize = new Size(S(840), S(650));
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -105,7 +105,7 @@ namespace LiteMonitor
                 BackColor = C_Panel,
             };
 
-            CreateDirectDash(pnlDash, S(50), "本次运行 (Current Session)", out _lblSessionUp, out _lblSessionDown);
+            CreateDirectDash(pnlDash, S(50), "이번 실행 (Current Session)", out _lblSessionUp, out _lblSessionDown);
 
             var split = new Label
             {
@@ -117,7 +117,7 @@ namespace LiteMonitor
             };
             pnlDash.Controls.Add(split);
 
-            CreateDirectDash(pnlDash, S(450), "今日汇总 (Today Total)", out _lblTodayUp, out _lblTodayDown);
+            CreateDirectDash(pnlDash, S(450), "오늘 합계 (Today Total)", out _lblTodayUp, out _lblTodayDown);
 
             this.Controls.Add(pnlDash);
 
@@ -125,7 +125,7 @@ namespace LiteMonitor
             var pnlTool = new Panel { Dock = DockStyle.Top, Height = S(55), BackColor = C_Back };
             pnlTool.Controls.Add(new Label
             {
-                Text = "统计维度 (View):",
+                Text = "보기 단위 (View):",
                 ForeColor = C_TextDim,
                 Location = new Point(S(20), S(18)),
                 AutoSize = true,
@@ -133,11 +133,11 @@ namespace LiteMonitor
             });
 
             int btnX = S(140);
-            _viewButtons.Add(HistoryViewMode.Daily, CreateBtn(pnlTool, "日报 (Day)", ref btnX));
-            _viewButtons.Add(HistoryViewMode.Weekly, CreateBtn(pnlTool, "周报 (Week)", ref btnX));
-            _viewButtons.Add(HistoryViewMode.Monthly, CreateBtn(pnlTool, "月报 (Month)", ref btnX));
-            _viewButtons.Add(HistoryViewMode.Quarterly, CreateBtn(pnlTool, "季报 (Quarter)", ref btnX));
-            _viewButtons.Add(HistoryViewMode.Yearly, CreateBtn(pnlTool, "年报 (Year)", ref btnX));
+            _viewButtons.Add(HistoryViewMode.Daily, CreateBtn(pnlTool, "일별 (Day)", ref btnX));
+            _viewButtons.Add(HistoryViewMode.Weekly, CreateBtn(pnlTool, "주별 (Week)", ref btnX));
+            _viewButtons.Add(HistoryViewMode.Monthly, CreateBtn(pnlTool, "월별 (Month)", ref btnX));
+            _viewButtons.Add(HistoryViewMode.Quarterly, CreateBtn(pnlTool, "분기별 (Quarter)", ref btnX));
+            _viewButtons.Add(HistoryViewMode.Yearly, CreateBtn(pnlTool, "연별 (Year)", ref btnX));
             this.Controls.Add(pnlTool);
 
             // === 3. 底部汇总栏 ===
@@ -189,19 +189,19 @@ namespace LiteMonitor
 
             // 添加列，并显式指定 SortMode 为 Automatic
             // Tag结构: [0]=Total, [1]=Max, [2]=Up, [3]=Down
-            var colDate = new DataGridViewTextBoxColumn { Name = "Date", HeaderText = "时间段 (Period)", FillWeight = 90, SortMode = DataGridViewColumnSortMode.Automatic };
+            var colDate = new DataGridViewTextBoxColumn { Name = "Date", HeaderText = "기간 (Period)", FillWeight = 90, SortMode = DataGridViewColumnSortMode.Automatic };
             colDate.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             _grid.Columns.Add(colDate);
 
-            _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Up", HeaderText = "上传 (Up)", FillWeight = 80, SortMode = DataGridViewColumnSortMode.Automatic });
+            _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Up", HeaderText = "업로드 (Up)", FillWeight = 80, SortMode = DataGridViewColumnSortMode.Automatic });
             _grid.Columns["Up"].DefaultCellStyle.ForeColor = C_Up;
 
-            _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Down", HeaderText = "下载 (Down)", FillWeight = 80, SortMode = DataGridViewColumnSortMode.Automatic });
+            _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Down", HeaderText = "다운로드 (Down)", FillWeight = 80, SortMode = DataGridViewColumnSortMode.Automatic });
             _grid.Columns["Down"].DefaultCellStyle.ForeColor = C_Down;
 
-            _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Total", HeaderText = "总计 (Total)", FillWeight = 80, SortMode = DataGridViewColumnSortMode.Automatic });
+            _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Total", HeaderText = "합계 (Total)", FillWeight = 80, SortMode = DataGridViewColumnSortMode.Automatic });
 
-            _grid.Columns.Add(new DataGridViewImageColumn { Name = "Chart", HeaderText = "流量占比 (Ratio)", FillWeight = 180, SortMode = DataGridViewColumnSortMode.Automatic });
+            _grid.Columns.Add(new DataGridViewImageColumn { Name = "Chart", HeaderText = "비율 (Ratio)", FillWeight = 180, SortMode = DataGridViewColumnSortMode.Automatic });
 
             // 绘图事件
             _grid.CellPainting += Grid_CellPainting;
@@ -259,12 +259,12 @@ namespace LiteMonitor
             p.Controls.Add(new Label { Text = title, ForeColor = C_TextDim, Location = new Point(startX, S(15)), AutoSize = true, Font = new Font("Microsoft YaHei UI", 9) });
             lblUp = new Label { Text = "0 KB", ForeColor = C_Up, Location = new Point(startX, S(45)), AutoSize = true, Font = new Font("Consolas", 20, FontStyle.Bold) };
             p.Controls.Add(lblUp);
-            p.Controls.Add(new Label { Text = "↑ 上传 (Upload)", ForeColor = C_Up, Location = new Point(startX + S(2), S(85)), AutoSize = true, Font = new Font("Microsoft YaHei UI", 8) });
+            p.Controls.Add(new Label { Text = "↑ 업로드 (Upload)", ForeColor = C_Up, Location = new Point(startX + S(2), S(85)), AutoSize = true, Font = new Font("Microsoft YaHei UI", 8) });
 
             int downX = startX + S(165);
             lblDown = new Label { Text = "0 KB", ForeColor = C_Down, Location = new Point(downX, S(45)), AutoSize = true, Font = new Font("Consolas", 20, FontStyle.Bold) };
             p.Controls.Add(lblDown);
-            p.Controls.Add(new Label { Text = "↓ 下载 (Download)", ForeColor = C_Down, Location = new Point(downX + S(2), S(85)), AutoSize = true, Font = new Font("Microsoft YaHei UI", 8) });
+            p.Controls.Add(new Label { Text = "↓ 다운로드 (Download)", ForeColor = C_Down, Location = new Point(downX + S(2), S(85)), AutoSize = true, Font = new Font("Microsoft YaHei UI", 8) });
         }
 
         private Button CreateBtn(Panel p, string txt, ref int x)
@@ -314,7 +314,7 @@ namespace LiteMonitor
             var raw = TrafficLogger.Data.History;
             if (raw == null || raw.Count == 0)
             {
-                _lblListSummary.Text = "暂无历史数据 (No Data)";
+                _lblListSummary.Text = "기록 데이터 없음 (No Data)";
                 return;
             }
 
@@ -365,8 +365,8 @@ namespace LiteMonitor
             }
 
             _grid.ClearSelection();
-            string modeName = mode switch { HistoryViewMode.Daily => "日", HistoryViewMode.Weekly => "周", HistoryViewMode.Monthly => "月", HistoryViewMode.Quarterly => "季", _ => "年" };
-            _lblListSummary.Text = $"{modeName}视图总计 (View Total):  ↑ {MetricUtils.FormatDataSize(sumUp)}    ↓ {MetricUtils.FormatDataSize(sumDown)}    (Σ {MetricUtils.FormatDataSize(sumUp + sumDown)})";
+            string modeName = mode switch { HistoryViewMode.Daily => "일별", HistoryViewMode.Weekly => "주별", HistoryViewMode.Monthly => "월별", HistoryViewMode.Quarterly => "분기별", _ => "연별" };
+            _lblListSummary.Text = $"{modeName} 보기 합계 (View Total):  ↑ {MetricUtils.FormatDataSize(sumUp)}    ↓ {MetricUtils.FormatDataSize(sumDown)}    (Σ {MetricUtils.FormatDataSize(sumUp + sumDown)})";
         }
 
         private void Grid_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)

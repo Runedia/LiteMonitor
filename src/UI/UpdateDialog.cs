@@ -8,7 +8,6 @@ using System.Net.Http.Headers; // 引入头文件处理
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Security.Principal;
 using LiteMonitor.src.Core; // 修复: 引用 Settings 类
 
 namespace LiteMonitor
@@ -23,7 +22,6 @@ namespace LiteMonitor
         // UI 配置
         public string VersionLabel { get; set; } = "";
         public string ActionButtonText { get; set; } = "Install";
-        public bool AutoExitOnSuccess { get; set; } = false; // 更新模式下为 true
     }
 
     public partial class UpdateDialog : Form
@@ -34,7 +32,7 @@ namespace LiteMonitor
         
         private CancellationTokenSource? _cts;
         private Stopwatch _speedWatch;
-        private bool IsChinese => _settings?.Language?.ToLower() == "zh";
+        private bool IsKorean => _settings?.Language?.ToLower() == "ko";
 
         public UpdateDialog(DownloadContext context, Settings settings)
         {
@@ -47,7 +45,7 @@ namespace LiteMonitor
             _sortedUrls = new List<string>(_context.Urls);
 
             // 初始化 UI
-            this.Text = IsChinese ? $"⚡️LiteMonitor - {_context.Title}" : $"⚡️LiteMonitor - {_context.Title}";
+            this.Text = IsKorean ? $"⚡️LiteMonitor - {_context.Title}" : $"⚡️LiteMonitor - {_context.Title}";
             lblVersion.Text = _context.VersionLabel;
             
             // 富文本设置 (必须在设置文本之前/之间正确处理)
@@ -68,13 +66,11 @@ namespace LiteMonitor
             // rtbChangelog.Left = ...
             
             // 设置按钮文本
-            btnUpdate.Text = IsChinese ? 
-                (_context.ActionButtonText == "Update" ? "立即更新" : "立即安装") : 
-                _context.ActionButtonText;
+            btnUpdate.Text = IsKorean ? "지금 설치" : _context.ActionButtonText;
                 
             label1.Text = _context.Title; // 修复: 直接使用 Context 中的标题，避免英文环境下被错误覆盖
-            btnCancel.Text = IsChinese ? "取消" : "Cancel";
-            lblStatus.Text = IsChinese ? "准备就绪" : "Ready";
+            btnCancel.Text = IsKorean ? "취소" : "Cancel";
+            lblStatus.Text = IsKorean ? "준비 완료" : "Ready";
 
             // 防止自动聚焦文本框 (将焦点设为按钮)
             this.ActiveControl = btnUpdate;
@@ -96,8 +92,8 @@ namespace LiteMonitor
             }
             catch (Exception ex)
             {
-                string title = IsChinese ? "错误" : "Error";
-                string msg = IsChinese ? $"无法打开链接：{e.LinkText}\n错误：{ex.Message}" : $"Cannot open link: {e.LinkText}\nError: {ex.Message}";
+                string title = IsKorean ? "오류" : "Error";
+                string msg = IsKorean ? $"링크를 열 수 없습니다: {e.LinkText}\n오류: {ex.Message}" : $"Cannot open link: {e.LinkText}\nError: {ex.Message}";
                 
                 MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -121,8 +117,8 @@ namespace LiteMonitor
         {
             if (_cts != null && e.CloseReason == CloseReason.UserClosing)
             {
-                string msg = IsChinese ? "正在下载更新，确定要取消吗？" : "Download in progress. Are you sure you want to cancel?";
-                string title = IsChinese ? "提示" : "Confirmation";
+                string msg = IsKorean ? "업데이트를 다운로드하는 중입니다. 취소할까요?" : "Download in progress. Are you sure you want to cancel?";
+                string title = IsKorean ? "확인" : "Confirmation";
                 
                 if (MessageBox.Show(msg, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
@@ -212,8 +208,8 @@ namespace LiteMonitor
 
                     try
                     {
-                        lblStatus.Text = _settings?.Language?.ToLower() == "zh" 
-                            ? $"正在连接下载服务器..." 
+                        lblStatus.Text = _settings?.Language?.ToLower() == "ko" 
+                            ? $"다운로드 서버에 연결하는 중..." 
                             : $"Connecting to server...";
 
                         // 安装包下载使用系统默认证书校验，证书异常时由现有逻辑尝试其他镜像。
@@ -287,7 +283,7 @@ namespace LiteMonitor
                     {
                         lastError = ex;
                         if (ex is OperationCanceledException) throw;
-                        lblStatus.Text = _settings?.Language?.ToLower() == "zh" ? "切换下载源..." : "Switching mirror...";
+                        lblStatus.Text = _settings?.Language?.ToLower() == "ko" ? "다운로드 서버 전환 중..." : "Switching mirror...";
                         continue; 
                     }
                 }
@@ -303,146 +299,43 @@ namespace LiteMonitor
                 _cts = null; 
                 ctsToDispose?.Dispose();
 
-                if (_context.AutoExitOnSuccess)
-                {
-                    StartUpdater();
-                }
-                else
-                {
-                    // 组件下载模式：直接返回成功，由调用方负责后续安装逻辑
-                    this.DialogResult = DialogResult.OK;
-                    this.Close();
-                }
+                // 组件下载模式：直接返回成功，由调用方负责后续安装逻辑
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
             catch (OperationCanceledException)
             {
                 // 用户取消，清理残留文件
                 CleanupPartialFile();
-                bool isZh = _settings?.Language?.ToLower() == "zh";
-                lblStatus.Text = isZh ? "已取消下载" : "Download Canceled";
+                bool isKo = _settings?.Language?.ToLower() == "ko";
+                lblStatus.Text = isKo ? "다운로드가 취소되었습니다" : "Download Canceled";
                 btnUpdate.Enabled = true;
-                btnUpdate.Text = IsChinese ? 
-                    (_context.ActionButtonText == "Update" ? "立即更新" : "立即安装") : 
-                    _context.ActionButtonText;
+                btnUpdate.Text = IsKorean ? "지금 설치" : _context.ActionButtonText;
                 btnCancel.Enabled = true; // 确保取消按钮可用
-                btnCancel.Text = isZh ? "关闭" : "Close";
+                btnCancel.Text = isKo ? "닫기" : "Close";
                 progress.Value = 0;
                 progress.Style = ProgressBarStyle.Blocks;
             }
             catch (Exception ex)
             {
                 CleanupPartialFile();
-                bool isZh = _settings?.Language?.ToLower() == "zh";
-                string errTitle = isZh ? "错误" : "Error";
-                string errMsg = isZh ? $"下载失败：\n{ex.Message}" : $"Download failed:\n{ex.Message}";
+                bool isKo = _settings?.Language?.ToLower() == "ko";
+                string errTitle = isKo ? "오류" : "Error";
+                string errMsg = isKo ? $"다운로드 실패:\n{ex.Message}" : $"Download failed:\n{ex.Message}";
                 
                 MessageBox.Show(errMsg, errTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 
                 // 重置 UI
                 btnUpdate.Enabled = true;
-                btnUpdate.Text = isZh ? "重试" : "Retry";
+                btnUpdate.Text = isKo ? "다시 시도" : "Retry";
                 btnCancel.Enabled = true;
-                btnCancel.Text = isZh ? "关闭" : "Close"; // 失败时也应显示"关闭"
+                btnCancel.Text = isKo ? "닫기" : "Close"; // 失败时也应显示"닫기"
                 progress.Value = 0;
             }
             finally
             {
                 _cts?.Dispose();
                 _cts = null;
-            }
-        }
-
-        private void StartUpdater()
-        {
-            string resourcesDir = Path.Combine(AppContext.BaseDirectory, "resources");
-            string updater = "";
-
-            // ★★★ 1. 主程序抢先更新 Updater.exe ★★★
-            // 防止 Updater 运行时无法自我覆盖
-            // 返回解压后的 Updater 路径 (优先取 ZIP 里的新版)
-            string? preparedPath = UpdateChecker.PreUpdateUpdater(_context.SavePath);
-
-            // ★★★ 2. 决策使用哪个 Updater ★★★
-            if (!string.IsNullOrEmpty(preparedPath) && File.Exists(preparedPath))
-            {
-                // A. 预更新成功，直接使用刚解压出来的最新版
-                updater = preparedPath;
-            }
-            else
-            {
-                // B. 预更新失败 (ZIP异常?)，尝试回退到现有文件
-                string newUpdater = Path.Combine(resourcesDir, "LiteMonitor.Updater.exe");
-                string oldUpdater = Path.Combine(resourcesDir, "Updater.exe");
-
-                if (File.Exists(newUpdater)) updater = newUpdater;
-                else if (File.Exists(oldUpdater)) updater = oldUpdater;
-            }
-
-            // ★★★ 3. 最终检查 ★★★
-            if (string.IsNullOrEmpty(updater) || !File.Exists(updater))
-            {
-                bool isZh = _settings?.Language?.ToLower() == "zh";
-                string msg = isZh ? $"找不到更新程序，请尝试重新安装。\nSearch Path: {resourcesDir}" : $"Updater not found, please reinstall.\nSearch Path: {resourcesDir}";
-                string title = isZh ? "文件丢失" : "File Missing";
-                
-                MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            var psi = new ProcessStartInfo
-            {
-                FileName = updater,
-                Arguments = $"\"{_context.SavePath}\"", // 传递 ZIP 路径
-                WorkingDirectory = AppContext.BaseDirectory // 显式指定工作目录
-            };
-
-            // ★★★ 智能提权逻辑 ★★★
-            if (IsRunningAsAdmin())
-            {
-                // 已经是管理员，直接继承权限，无需再弹窗
-                psi.UseShellExecute = false; 
-            }
-            else
-            {
-                // 普通用户，申请提权
-                psi.UseShellExecute = true;
-                psi.Verb = "runas"; 
-            }
-
-            try
-            {
-                Process.Start(psi);
-                Application.Exit(); // 启动成功，退出主程序
-            }
-            catch (System.ComponentModel.Win32Exception ex) when (ex.NativeErrorCode == 1223)
-            {
-                // ★★★ 捕获 Error 1223: 操作已被用户取消 ★★★
-                // 用户在 UAC 弹窗点了“否”，我们要静默处理，不要弹错误窗
-                // 恢复界面状态，允许用户再次点击
-                bool isZh = _settings?.Language?.ToLower() == "zh";
-                btnUpdate.Enabled = true;
-                btnUpdate.Text = isZh ? "立即更新" : "Update";
-            }
-            catch (Exception ex)
-            {
-                bool isZh = _settings?.Language?.ToLower() == "zh";
-                string msg = isZh ? $"启动更新程序失败：\n{ex.Message}" : $"Failed to start updater:\n{ex.Message}";
-                string title = isZh ? "错误" : "Error";
-                
-                MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                // 恢复按钮状态
-                btnUpdate.Enabled = true;
-                btnUpdate.Text = isZh ? "重试" : "Retry";
-            }
-        }
-
-        // 辅助方法：检查当前是否为管理员
-        private bool IsRunningAsAdmin()
-        {
-            using (var identity = WindowsIdentity.GetCurrent())
-            {
-                var principal = new WindowsPrincipal(identity);
-                return principal.IsInRole(WindowsBuiltInRole.Administrator);
             }
         }
 

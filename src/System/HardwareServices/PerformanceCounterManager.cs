@@ -14,6 +14,8 @@ namespace LiteMonitor.src.SystemServices
     {
         // --- 核心计数器实例 ---
         private PerformanceCounter? _cpuLoadCounter;      // CPU 总使用率 (含内核时间)
+        private PerformanceCounter? _cpuTimeCounter;      // CPU 处理器时间 (%)，用于校验 Utility
+        private PerformanceCounter? _cpuLoadPerfCounter;  // CPU 性能百分比 (负载专用，避免与频率计算共享采样)
         private PerformanceCounter? _cpuActualFreqCounter; // CPU 实际频率 (MHz)
         private PerformanceCounter? _cpuProcessorFreqCounter; // CPU 处理器频率 (MHz)
         private PerformanceCounter? _cpuFreqCounter;      // CPU 性能百分比 (用于计算频率)
@@ -71,8 +73,12 @@ namespace LiteMonitor.src.SystemServices
                     if (_cpuLoadCounter == null)
                         _cpuLoadCounter = CreateCounter("Processor Information", "% Processor Time", "_Total"); // 回退1
 
-                    if (_cpuLoadCounter == null) 
+                    if (_cpuLoadCounter == null)
                         _cpuLoadCounter = CreateCounter("Processor", "% Processor Time", "_Total"); // 旧系统回退
+
+                    // 部分系统的 _Total Utility 不随负载变化，需要用 时间×性能 校验
+                    _cpuTimeCounter = CreateCounter("Processor Information", "% Processor Time", "_Total");
+                    _cpuLoadPerfCounter = CreateCounter("Processor Information", "% Processor Performance", "_Total");
 
                     // CPU 频率：优先读取 Windows 直接频率，旧系统缺失时再走百分比换算
                     _cpuActualFreqCounter = CreateCounter("Processor Information", "Actual Frequency", "_Total");
@@ -108,6 +114,8 @@ namespace LiteMonitor.src.SystemServices
                     // [Fix] 使用 SafeRead 代替直接调用 NextValue，防止某个计数器崩溃导致整个初始化失败 (#268)
                     
                     SafeRead(_cpuLoadCounter);
+                    SafeRead(_cpuTimeCounter);
+                    SafeRead(_cpuLoadPerfCounter);
                     SafeRead(_cpuActualFreqCounter);
                     SafeRead(_cpuProcessorFreqCounter);
                     SafeRead(_cpuFreqCounter);
@@ -189,9 +197,35 @@ namespace LiteMonitor.src.SystemServices
 
         public float? GetCpuLoad()
         {
-            var val = SafeRead(_cpuLoadCounter);
+            return ResolveCpuLoad(SafeRead(_cpuLoadCounter), SafeRead(_cpuTimeCounter), SafeRead(_cpuLoadPerfCounter));
+        }
+
+        // Utility 与 时间×性能 的允许偏差 (百分点)
+        private const float CpuUtilityTolerance = 20f;
+
+        private static float? ResolveCpuLoad(float? utility, float? time, float? performance)
+        {
+            bool hasUtility = utility.HasValue && float.IsFinite(utility.Value);
+            bool hasTime = time.HasValue && float.IsFinite(time.Value) && time.Value >= 0f;
+            bool hasPerformance = performance.HasValue && float.IsFinite(performance.Value) && performance.Value > 0f;
+
+            if (hasTime && hasPerformance)
+            {
+                // 任务管理器口径：Utility ≈ 处理器时间 × 性能百分比
+                float estimated = time!.Value * performance!.Value / 100f;
+
+                // 部分系统 (如 Windows 26300) 的 _Total Utility 恒等于性能百分比，不随负载变化；
+                // 与估算值偏差过大时不采用，避免负载固定显示 100%
+                if (hasUtility && Math.Abs(utility!.Value - estimated) <= CpuUtilityTolerance)
+                    return Math.Clamp(utility.Value, 0f, 100f);
+
+                return Math.Clamp(estimated, 0f, 100f);
+            }
+
             // [Fix] Utility 计数器在睿频时可能超过 100%，需截断以匹配任务管理器行为
-            return val > 100f ? 100f : val;
+            if (hasUtility) return Math.Clamp(utility!.Value, 0f, 100f);
+            if (hasTime) return Math.Clamp(time!.Value, 0f, 100f);
+            return null;
         }
 
         public float? GetCpuFreq()
@@ -316,6 +350,8 @@ namespace LiteMonitor.src.SystemServices
         {
             // 释放所有计数器资源
             _cpuLoadCounter?.Dispose();
+            _cpuTimeCounter?.Dispose();
+            _cpuLoadPerfCounter?.Dispose();
             _cpuActualFreqCounter?.Dispose();
             _cpuProcessorFreqCounter?.Dispose();
             _cpuFreqCounter?.Dispose();

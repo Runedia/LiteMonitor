@@ -97,60 +97,6 @@ namespace LiteMonitor
 
             modeRoot.DropDownItems.Add(taskbarMode);
 
-
-            // =========================================================
-            // ★★★ [修改] 网页显示选项 (改为二级菜单结构) ★★★
-            // =========================================================
-            var itemWeb = new ToolStripMenuItem(LanguageManager.T("Menu.WebServer")); // 请确保语言包有 "Menu.WebServer"
-            
-            // 1. 子项：启用/禁用
-            var itemWebEnable = new ToolStripMenuItem(LanguageManager.T("Menu.Enable")) // 请确保语言包有 "Menu.WebServerEnabled"
-            {
-                Checked = cfg.WebServerEnabled,
-                CheckOnClick = true
-            };
-
-            // 2. 子项：打开网页 (动态获取 IP)
-            var itemWebOpen = new ToolStripMenuItem(LanguageManager.T("Menu.OpenWeb")); // 请确保语言包有 "Menu.OpenWeb"
-            itemWebOpen.Enabled = cfg.WebServerEnabled; // 只有开启时才可用
-
-            // 事件：切换开关
-            itemWebEnable.CheckedChanged += (s, e) => 
-            {
-                // 1. 更新配置
-                cfg.WebServerEnabled = itemWebEnable.Checked;
-                cfg.Save(); 
-
-                // 2. ★ 立即应用（调用 AppActions 重启服务）
-                AppActions.ApplyWebServer(cfg); 
-                
-                // 3. 刷新“打开网页”按钮的可用状态
-                itemWebOpen.Enabled = cfg.WebServerEnabled;
-
-                // 4. [新增] 开启时弹窗引导
-                if (cfg.WebServerEnabled)
-                {
-                    string msg = LanguageManager.T("Menu.WebServerTip");
-                    if (MessageBox.Show(msg, "LiteMonitor", MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == DialogResult.OK)
-                    {
-                        itemWebOpen.PerformClick();
-                    }
-                }
-            };
-
-            // 事件：打开网页
-            itemWebOpen.Click += (s, e) => 
-            {
-                WebActions.OpenWebMonitor(cfg);
-            };
-
-            itemWeb.ToolTipText = LanguageManager.T("Menu.WebServerTip");
-            // 将子项加入父菜单
-            itemWeb.DropDownItems.Add(itemWebEnable);
-            itemWeb.DropDownItems.Add(itemWebOpen);
-            // 将父菜单加入“显示模式”组 (或者您可以根据喜好移到 menu.Items.Add(itemWeb) 放到外层)
-            modeRoot.DropDownItems.Add(itemWeb);
-            
             modeRoot.DropDownItems.Add(new ToolStripSeparator());
             // =========================================================
 
@@ -459,7 +405,7 @@ namespace LiteMonitor
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("设置面板启动失败: " + ex.Message);
+                    MessageBox.Show("설정 창을 열지 못했습니다: " + ex.Message);
                 }
             };
             menu.Items.Add(itemSettings);
@@ -591,11 +537,7 @@ namespace LiteMonitor
             moreRoot.DropDownItems.Add(itemShutdown);
 
             moreRoot.DropDownItems.Add(new ToolStripSeparator());
-              // 0. 检查更新、反馈、日志、关于
-            var itemCheckUpdate = new ToolStripMenuItem(LanguageManager.T("Menu.CheckUpdate"));
-            itemCheckUpdate.Click += async (_, __) => await UpdateChecker.CheckAsync(true);
-            moreRoot.DropDownItems.Add(itemCheckUpdate);
-
+            // 0. 反馈、日志、关于
             var itemFeedback = new ToolStripMenuItem(LanguageManager.T("Menu.Feedback"));
             itemFeedback.Click += (_, __) => SystemActions.OpenUrl("https://github.com/Diorser/LiteMonitor/issues");
             moreRoot.DropDownItems.Add(itemFeedback);
@@ -623,26 +565,6 @@ namespace LiteMonitor
             menu.Items.Add(moreRoot);
             menu.Items.Add(new ToolStripSeparator());
 
-
-             // === 发现新版本 ===
-            if (UpdateChecker.IsUpdateFound)
-            {
-                bool isZh = cfg.Language?.ToLower().Contains("zh") == true;
-                string text = isZh ? $"💡发现新版本(v{UpdateChecker.LatestVersionInfo?.latest})" : $"🔄New version(v{UpdateChecker.LatestVersionInfo?.latest})";
-                
-                var updateItem = new ToolStripMenuItem(text);
-                // 鼠标停留提示更新日期与内容摘要 (移除加粗和自定义颜色以解决托盘菜单闪烁问题)
-                string? rawLog = UpdateChecker.LatestVersionInfo?.changelog;
-                string logSummary = string.IsNullOrEmpty(rawLog) ? "" : rawLog.Replace("\r", "").Replace("\n", " ");
-                if (logSummary.Length > 45) logSummary = string.Concat(logSummary.AsSpan(0, 45), "...");
-                updateItem.ToolTipText = $"{UpdateChecker.LatestVersionInfo?.releaseDate}: {logSummary}";
-                updateItem.ForeColor = Color.RoyalBlue;
-                updateItem.Font = new Font(updateItem.Font, FontStyle.Bold);
-                
-                updateItem.Click += async (_, __) => await UpdateChecker.CheckAsync(true);
-                menu.Items.Add(updateItem);
-                menu.Items.Add(new ToolStripSeparator());
-            }
             // 7. 退出 (App) - 独立一栏放到外面来
             
             var itemExit = new ToolStripMenuItem(LanguageManager.T("Menu.Exit"));

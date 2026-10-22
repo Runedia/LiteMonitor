@@ -7,7 +7,7 @@ namespace LiteMonitor.src.Core
 {
     public static class LanguageManager
     {
-        public static string CurrentLang { get; private set; } = "zh";
+        public static string CurrentLang { get; private set; } = "ko";
         private static Dictionary<string, string> _texts = new();
 
         // ★★★ 1. 新增：用户自定义覆盖字典 ★★★

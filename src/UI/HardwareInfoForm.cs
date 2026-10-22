@@ -19,11 +19,11 @@ namespace LiteMonitor.src.UI
         
         private Settings _settings = Settings.Load();
         
-        private string T(string en, string zh) => _settings.Language.ToLower().StartsWith("zh") ? zh : en; 
+        private string T(string en, string ko) => _settings.Language.ToLower().StartsWith("ko") ? ko : en; 
 
         public HardwareInfoForm()
         {
-            this.Text = T("LiteMonitor - Hardware Info", "LiteMonitor - 系统硬件详情");
+            this.Text = T("LiteMonitor - Hardware Info", "LiteMonitor - 시스템 하드웨어 상세");
             this.Size = new Size(UIUtils.S(600), UIUtils.S(750)); // 稍微加宽一点
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.White;
@@ -35,7 +35,7 @@ namespace LiteMonitor.src.UI
                 Dock = DockStyle.Fill, 
                 BorderStyle = BorderStyle.FixedSingle,
                 Font = new Font("Microsoft YaHei UI", 9f), 
-                PlaceholderText = T("Search sensor name...", "搜索传感器名称...") 
+                PlaceholderText = T("Search sensor name...", "센서 이름 검색...") 
             };
             _searchInput.TextChanged += (s, e) => RebuildTree(_searchInput.Text.Trim());
             pnlToolbar.Controls.Add(_searchInput);
@@ -51,13 +51,13 @@ namespace LiteMonitor.src.UI
             var cms = new ContextMenuStrip();
             
             // 1. 定义菜单项 (保留引用以便后续控制显示)
-            var itemCopyName = cms.Items.Add(T("Copy Name", "复制名称"), null, (s, e) => CopyInfo("Name"));
-            var itemCopyId = cms.Items.Add(T("Copy ID", "复制传感器ID"), null, (s, e) => CopyInfo("ID"));
-            var itemCopyVal = cms.Items.Add(T("Copy Value", "复制数值"), null, (s, e) => CopyInfo("Value"));
+            var itemCopyName = cms.Items.Add(T("Copy Name", "이름 복사"), null, (s, e) => CopyInfo("Name"));
+            var itemCopyId = cms.Items.Add(T("Copy ID", "센서 ID 복사"), null, (s, e) => CopyInfo("ID"));
+            var itemCopyVal = cms.Items.Add(T("Copy Value", "값 복사"), null, (s, e) => CopyInfo("Value"));
             
             cms.Items.Add(new ToolStripSeparator());
-            cms.Items.Add(T("Expand All", "全部展开"), null, (s, e) => _tree.ExpandAll());
-            cms.Items.Add(T("Collapse All", "全部折叠"), null, (s, e) => _tree.CollapseAll());
+            cms.Items.Add(T("Expand All", "모두 펼치기"), null, (s, e) => _tree.ExpandAll());
+            cms.Items.Add(T("Collapse All", "모두 접기"), null, (s, e) => _tree.CollapseAll());
 
             // 2. ★★★ 新增：Opening 事件，根据选中节点的类型动态显示/隐藏菜单项 ★★★
             cms.Opening += (s, e) => 
@@ -139,17 +139,17 @@ namespace LiteMonitor.src.UI
             // 2. 绘制 "Sensor" (左侧)
             // 使用 Rectangle 而不是 Point，并垂直居中，防止位置跑偏
             Rectangle titleRect = new Rectangle(30, 0, xValueLeft - 10, _headerPanel.Height);
-            TextRenderer.DrawText(g, " " + T("Sensor", "硬件 > 传感器"), font, titleRect, Color.FromArgb(80, 80, 80), 
+            TextRenderer.DrawText(g, " " + T("Sensor", "하드웨어 > 센서"), font, titleRect, Color.FromArgb(80, 80, 80), 
                 TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.SingleLine | TextFormatFlags.EndEllipsis);
 
             // 3. 绘制 "Max"
             Rectangle maxRect = new Rectangle(xMaxLeft, 0, colMaxW, _headerPanel.Height);
-            TextRenderer.DrawText(g, T("Max", "最大记录"), font, maxRect, Color.FromArgb(80, 80, 80), 
+            TextRenderer.DrawText(g, T("Max", "최대 기록"), font, maxRect, Color.FromArgb(80, 80, 80), 
                 TextFormatFlags.VerticalCenter | TextFormatFlags.Right | TextFormatFlags.SingleLine);
 
             // 4. 绘制 "Value"
             Rectangle valRect = new Rectangle(xValueLeft, 0, colValW, _headerPanel.Height);
-            TextRenderer.DrawText(g, T("Value", "数值"), font, valRect, Color.FromArgb(80, 80, 80), 
+            TextRenderer.DrawText(g, T("Value", "값"), font, valRect, Color.FromArgb(80, 80, 80), 
                 TextFormatFlags.VerticalCenter | TextFormatFlags.Right | TextFormatFlags.SingleLine);
             
             font.Dispose();
@@ -163,7 +163,7 @@ namespace LiteMonitor.src.UI
             var computer = HardwareMonitor.Instance?.ComputerInstance;
             if (computer == null || computer.Hardware.Count == 0) 
             {
-                _tree.Nodes.Add(new TreeNode(T("Initializing...", "初始化中...")));
+                _tree.Nodes.Add(new TreeNode(T("Initializing...", "초기화 중...")));
                 _tree.EndUpdate();
                 return;
             }
@@ -288,37 +288,37 @@ namespace LiteMonitor.src.UI
         private string GetHardwareTypeString(HardwareType type)
         {
             switch (type) {
-                case HardwareType.Cpu: return T("💻 [CPU]", "💻 [处理器]");
+                case HardwareType.Cpu: return T("💻 [CPU]", "💻 [프로세서]");
                 case HardwareType.GpuNvidia:
                 case HardwareType.GpuAmd:
-                case HardwareType.GpuIntel: return T("🎮 [GPU]", "🎮 [显卡]");
-                case HardwareType.Memory: return T("💾 [Memory]", "💾 [内存]");
-                case HardwareType.Motherboard: return T("⌨ [Motherboard]", "⌨ [主板]");
-                case HardwareType.Storage: return T("💽 [Storage]", "💽 [硬盘]");
-                case HardwareType.Network: return T("🌐 [Network]", "🌐 [网卡]"); 
-                case HardwareType.SuperIO: return T("📟 [SuperIO]", "📟 [IO芯片]");
+                case HardwareType.GpuIntel: return T("🎮 [GPU]", "🎮 [그래픽카드]");
+                case HardwareType.Memory: return T("💾 [Memory]", "💾 [메모리]");
+                case HardwareType.Motherboard: return T("⌨ [Motherboard]", "⌨ [메인보드]");
+                case HardwareType.Storage: return T("💽 [Storage]", "💽 [디스크]");
+                case HardwareType.Network: return T("🌐 [Network]", "🌐 [네트워크]"); 
+                case HardwareType.SuperIO: return T("📟 [SuperIO]", "📟 [IO 칩]");
                 // 可选：如果遇到水冷控制器等
-                case HardwareType.Cooler: return T("❄️ [Cooler]", "❄️ [散热器]");
+                case HardwareType.Cooler: return T("❄️ [Cooler]", "❄️ [쿨러]");
                 default: return $"🟢 [{type}]";
             }
         }
         private string GetSensorTypeString(SensorType type)
         {
             switch (type) {
-                case SensorType.Temperature: return T("🌡️ [Temperature]", "🌡️ [温度]");
-                case SensorType.Load: return T("⌛ [Load]", "⌛ [负载]");
-                case SensorType.Fan: return T("🌀 [Fan]", "🌀 [风扇]");
-                case SensorType.Power: return T("⚡ [Power]", "⚡ [功耗]");
-                case SensorType.Clock: return T("⏱️ [Clock]", "⏱️ [频率]");
-                case SensorType.Control: return T("🎛️ [Control]", "🎛️ [控制]");
-                case SensorType.Voltage: return T("🔋 [Voltage]", "🔋 [电压]");
-                case SensorType.Data: return T("📈 [Data]", "📈 [数据]");
-                case SensorType.SmallData: return T("📶 [SmallData]", "📶 [小型数据]");
-                case SensorType.Throughput: return T("🚀 [Throughput]", "🚀 [吞吐量]");
+                case SensorType.Temperature: return T("🌡️ [Temperature]", "🌡️ [온도]");
+                case SensorType.Load: return T("⌛ [Load]", "⌛ [부하]");
+                case SensorType.Fan: return T("🌀 [Fan]", "🌀 [팬]");
+                case SensorType.Power: return T("⚡ [Power]", "⚡ [전력]");
+                case SensorType.Clock: return T("⏱️ [Clock]", "⏱️ [클럭]");
+                case SensorType.Control: return T("🎛️ [Control]", "🎛️ [제어]");
+                case SensorType.Voltage: return T("🔋 [Voltage]", "🔋 [전압]");
+                case SensorType.Data: return T("📈 [Data]", "📈 [데이터]");
+                case SensorType.SmallData: return T("📶 [SmallData]", "📶 [소형 데이터]");
+                case SensorType.Throughput: return T("🚀 [Throughput]", "🚀 [처리량]");
                 // ★★★ 新增以下三项 ★★★
-                case SensorType.Level: return T("📉 [Level]", "📉 [剩余/寿命]"); // 用于 SSD 寿命或油箱液位
-                case SensorType.Factor: return T("🔢 [Factor]", "🔢 [系数]");      // 用于写入放大系数等
-                case SensorType.Timing: return T("⏱️ [Timing]", "⏱️ [时序]");
+                case SensorType.Level: return T("📉 [Level]", "📉 [잔량/수명]"); // 用于 SSD 寿命或油箱液位
+                case SensorType.Factor: return T("🔢 [Factor]", "🔢 [계수]");      // 用于写入放大系数等
+                case SensorType.Timing: return T("⏱️ [Timing]", "⏱️ [타이밍]");
                 default: return $"🟢 [{type}]";
             }
         }

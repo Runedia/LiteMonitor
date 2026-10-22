@@ -310,7 +310,6 @@ namespace LiteMonitor.src.UI.Helpers
                 case 2: OpenSettings(); break;
                 case 3: OpenTrafficHistory(); break;
                 case 4: CleanMemory(); break;
-                case 5: WebActions.OpenWebMonitor(_cfg); break;
                 case 0: default: ToggleLayoutMode(); break;
             }
         }
@@ -345,14 +344,6 @@ namespace LiteMonitor.src.UI.Helpers
             try
             {
                 if (HardwareMonitor.Instance != null) await HardwareMonitor.Instance.SmartCheckDriver();
-                await UpdateChecker.CheckAsync();
-                CheckUpdateSuccess();
-
-                // 如果发现新版本，重新构建菜单以显示“发现新版本”按钮
-                if (UpdateChecker.IsUpdateFound)
-                {
-                    _form.BeginInvoke(new Action(() => RebuildMenus()));
-                }
 
                 // [Fix] 再次确认窗口属性（置顶、穿透），作为启动后的二次校验，确保功能与 UI 勾选一致
                 _form.BeginInvoke(new Action(() => {
@@ -360,18 +351,6 @@ namespace LiteMonitor.src.UI.Helpers
                 }));
             }
             catch { }
-        }
-
-        private void CheckUpdateSuccess()
-        {
-            string tokenPath = Path.Combine(AppContext.BaseDirectory, "update_success");
-            if (File.Exists(tokenPath))
-            {
-                try { File.Delete(tokenPath); } catch { }
-                string title = "⚡️LiteMonitor_v" + UpdateChecker.GetCurrentVersion();
-                string content = _cfg.Language == "zh" ? "🎉 软件已成功更新到最新版本！" : "🎉 Software updated to latest version!";
-                ShowNotification(title, content, ToolTipIcon.Info);
-            }
         }
 
         public void Dispose()

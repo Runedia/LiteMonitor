@@ -84,7 +84,7 @@ namespace LiteMonitor
             btnUpdate.Name = "btnUpdate";
             btnUpdate.Size = new Size(80, 30);
             btnUpdate.TabIndex = 3;
-            btnUpdate.Text = "立即更新";
+            btnUpdate.Text = "지금 업데이트";
             btnUpdate.UseVisualStyleBackColor = true;
             btnUpdate.Click += btnUpdate_Click;
             // 
@@ -94,7 +94,7 @@ namespace LiteMonitor
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(80, 30);
             btnCancel.TabIndex = 4;
-            btnCancel.Text = "取消";
+            btnCancel.Text = "취소";
             btnCancel.UseVisualStyleBackColor = true;
             btnCancel.Click += btnCancel_Click;
             // 
@@ -107,7 +107,7 @@ namespace LiteMonitor
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(56, 17);
             lblStatus.TabIndex = 5;
-            lblStatus.Text = "准备就绪";
+            lblStatus.Text = "준비 완료";
             // 
             // label1
             // 
@@ -117,7 +117,7 @@ namespace LiteMonitor
             label1.Name = "label1";
             label1.Size = new Size(106, 22);
             label1.TabIndex = 6;
-            label1.Text = "发现新版本！";
+            label1.Text = "새 버전이 있습니다!";
             label1.TextAlign = ContentAlignment.TopCenter;
             // 
             // UpdateDialog

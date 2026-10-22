@@ -145,7 +145,7 @@ namespace LiteMonitor
                 File.AppendAllText(logPath, errorMsg);
 
                 // 只有真的崩了才弹窗提示用户
-                MessageBox.Show($"程序遇到致命错误！\n错误日志已保存至：{logPath}\n\n原因：{ex.Message}", 
+                MessageBox.Show($"치명적인 오류가 발생했습니다!\n오류 로그 저장 위치: {logPath}\n\n원인: {ex.Message}", 
                                 "LiteMonitor Crash", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch 

@@ -120,11 +120,10 @@ namespace LiteMonitor
         public MainForm()
         {
             // 语言加载
+            // 首次运行固定使用韩语，可在设置中切换
             if (string.IsNullOrEmpty(_cfg.Language))
             {
-                string sysLang = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.ToLower();
-                string langPath = Path.Combine(AppContext.BaseDirectory, "resources/lang", $"{sysLang}.json");
-                _cfg.Language = File.Exists(langPath) ? sysLang : "en";
+                _cfg.Language = "ko";
             }
             LanguageManager.Load(_cfg.Language);
             _cfg.SyncToLanguage();
@@ -135,10 +134,7 @@ namespace LiteMonitor
 
             TrafficLogger.Load();
             HardwareHistoryLogger.Load();
-            src.Plugins.PluginManager.Instance.LoadPlugins(Path.Combine(AppContext.BaseDirectory, "resources", "plugins"));
-            src.Plugins.PluginManager.Instance.Start();
             _ui = new UIController(_cfg, this);
-            new src.WebServer.LiteWebServer(_cfg);
 
             // 5. 设置背景色 (这是关键！解耦时漏掉了这行，导致背景是系统默认色而非透明或皮肤色)
             BackColor = ThemeManager.ParseColor(ThemeManager.Current.Color.Background);
@@ -318,16 +314,6 @@ namespace LiteMonitor
 
             if (_cfg.ShowTaskbar) ToggleTaskbar(true);
 
-            // 启动 WebServer
-            if (_cfg.WebServerEnabled)
-            {
-                if (src.WebServer.LiteWebServer.Instance?.Start(out string err) == false)
-                {
-                     ShowNotification("WebServer Error", 
-                         (_cfg.Language == "zh" ? "Web服务启动失败: " : "Web Server Failed: ") + err, 
-                         ToolTipIcon.Error);
-                }
-            }
             // 这样既检查了驱动，也检查了更新，以及置顶 透明度 穿透 等，而且时机完美（窗口显示后）
             if (_bizHelper != null)
             {
@@ -349,7 +335,6 @@ namespace LiteMonitor
             _cfg.Save(); 
             TrafficLogger.Save(); 
             HardwareHistoryLogger.Save();
-            src.WebServer.LiteWebServer.Instance?.Stop();
             
             base.OnFormClosed(e);
             

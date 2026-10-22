@@ -103,7 +103,7 @@ namespace LiteMonitor
                 Dock = DockStyle.Fill,
                 BackColor = C_GridBack,
                 Font = Font,
-                EmptyText = T("暂无历史数据", "No history")
+                EmptyText = T("기록 데이터 없음", "No history")
             };
             Controls.Add(_chart);
             _chart.BringToFront();
@@ -144,21 +144,21 @@ namespace LiteMonitor
                 WrapContents = false
             };
 
-            AddLabel(toolbar, T("分类", "Group"));
-            AddCategoryButton(toolbar, TrendCategory.Temperature, T("温度", "Temp"));
-            AddCategoryButton(toolbar, TrendCategory.Load, T("负载", "Load"));
-            AddCategoryButton(toolbar, TrendCategory.Power, T("功耗", "Power"));
-            AddCategoryButton(toolbar, TrendCategory.Frequency, T("频率", "Clock"));
+            AddLabel(toolbar, T("분류", "Group"));
+            AddCategoryButton(toolbar, TrendCategory.Temperature, T("온도", "Temp"));
+            AddCategoryButton(toolbar, TrendCategory.Load, T("부하", "Load"));
+            AddCategoryButton(toolbar, TrendCategory.Power, T("전력", "Power"));
+            AddCategoryButton(toolbar, TrendCategory.Frequency, T("클럭", "Clock"));
             AddCategoryButton(toolbar, TrendCategory.Fps, "FPS");
 
             AddSpacer(toolbar, S(18));
-            AddLabel(toolbar, T("范围", "Range"));
-            AddRangeButton(toolbar, TrendRange.Hour1, T("1小时", "1h"));
-            AddRangeButton(toolbar, TrendRange.Day1, T("24小时", "24h"));
-            AddRangeButton(toolbar, TrendRange.Day7, T("7天", "7d"));
+            AddLabel(toolbar, T("범위", "Range"));
+            AddRangeButton(toolbar, TrendRange.Hour1, T("1시간", "1h"));
+            AddRangeButton(toolbar, TrendRange.Day1, T("24시간", "24h"));
+            AddRangeButton(toolbar, TrendRange.Day7, T("7일", "7d"));
 
             AddSpacer(toolbar, S(18));
-            string exportText = T("导出 CSV", "Export CSV");
+            string exportText = T("CSV 내보내기", "Export CSV");
             var export = CreateButton(exportText, GetTextButtonWidth(exportText, 96));
             export.Click += (_, __) => ExportCsv();
             toolbar.Controls.Add(export);
@@ -201,12 +201,12 @@ namespace LiteMonitor
             grid.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             grid.RowTemplate.Height = S(32);
 
-            AddTextColumn(grid, "Name", T("指标", "Metric"), 140, DataGridViewContentAlignment.MiddleLeft);
-            AddTextColumn(grid, "Current", T("最新", "Latest"), 85);
-            AddTextColumn(grid, "Avg", T("平均", "Average"), 85);
-            AddTextColumn(grid, "Max", T("最高", "Max"), 85);
-            AddTextColumn(grid, "Min", T("最低", "Min"), 85);
-            AddTextColumn(grid, "Count", T("样本", "Samples"), 70);
+            AddTextColumn(grid, "Name", T("항목", "Metric"), 140, DataGridViewContentAlignment.MiddleLeft);
+            AddTextColumn(grid, "Current", T("최신", "Latest"), 85);
+            AddTextColumn(grid, "Avg", T("평균", "Average"), 85);
+            AddTextColumn(grid, "Max", T("최고", "Max"), 85);
+            AddTextColumn(grid, "Min", T("최저", "Min"), 85);
+            AddTextColumn(grid, "Count", T("샘플", "Samples"), 70);
 
             return grid;
         }
@@ -228,8 +228,8 @@ namespace LiteMonitor
             _chart.Title = GetCategoryTitle();
             _chart.Threshold = _category == TrendCategory.Temperature ? _cfg.AlertTempThreshold : null;
             _chart.EmptyText = HasEnabledMetricInCurrentCategory()
-                ? T("暂无历史数据", "No history")
-                : T("当前分类没有开启的监控项", "No enabled metrics in this group");
+                ? T("기록 데이터 없음", "No history")
+                : T("현재 분류에 켜진 모니터링 항목이 없습니다", "No enabled metrics in this group");
             _chart.SetSeries(_currentSeries);
 
             FillSummary();
@@ -366,7 +366,7 @@ namespace LiteMonitor
 
             using var dialog = new SaveFileDialog
             {
-                Title = T("导出硬件趋势", "Export Hardware Trends"),
+                Title = T("하드웨어 추이 내보내기", "Export Hardware Trends"),
                 Filter = "CSV (*.csv)|*.csv",
                 FileName = $"HardwareTrend_{DateTime.Now:yyyyMMdd_HHmm}.csv"
             };
@@ -419,12 +419,12 @@ namespace LiteMonitor
         {
             return _category switch
             {
-                TrendCategory.Temperature => T("温度趋势", "Temperature Trend"),
-                TrendCategory.Load => T("负载趋势", "Load Trend"),
-                TrendCategory.Power => T("功耗趋势", "Power Trend"),
-                TrendCategory.Frequency => T("频率趋势", "Clock Trend"),
-                TrendCategory.Fps => T("帧率趋势", "FPS Trend"),
-                _ => T("硬件趋势", "Hardware Trend")
+                TrendCategory.Temperature => T("온도 추이", "Temperature Trend"),
+                TrendCategory.Load => T("부하 추이", "Load Trend"),
+                TrendCategory.Power => T("전력 추이", "Power Trend"),
+                TrendCategory.Frequency => T("클럭 추이", "Clock Trend"),
+                TrendCategory.Fps => T("프레임 추이", "FPS Trend"),
+                _ => T("하드웨어 추이", "Hardware Trend")
             };
         }
 
@@ -650,9 +650,9 @@ namespace LiteMonitor
             return colors[index % colors.Length];
         }
 
-        private string T(string zh, string en)
+        private string T(string ko, string en)
         {
-            return (_cfg.Language ?? "").StartsWith("zh", StringComparison.OrdinalIgnoreCase) ? zh : en;
+            return (_cfg.Language ?? "").StartsWith("ko", StringComparison.OrdinalIgnoreCase) ? ko : en;
         }
 
         private int S(int pixel) => (int)(pixel * _scale);

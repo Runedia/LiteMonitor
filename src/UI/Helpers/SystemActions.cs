@@ -136,10 +136,10 @@ namespace LiteMonitor.src.UI.Helpers
                 else if (freedBytes > 1024 * 1024) sizeStr = $"{freedBytes / 1024.0 / 1024:F2} MB";
                 else sizeStr = $"{freedBytes / 1024.0:F2} KB";
 
-                bool isZh = LanguageManager.CurrentLang == "zh";
-                string title = isZh ? "系统清理" : "System Cleanup";
-                string message = isZh
-                    ? $"清理完成！\n共删除 {count} 个文件/文件夹\n释放空间: {sizeStr}"
+                bool isKo = LanguageManager.CurrentLang == "ko";
+                string title = isKo ? "시스템 정리" : "System Cleanup";
+                string message = isKo
+                    ? $"정리 완료!\n삭제한 파일/폴더: {count}개\n확보한 공간: {sizeStr}"
                     : $"Cleanup complete!\nDeleted {count} files/folders\nFreed space: {sizeStr}";
                 MessageBox.Show(message, title);
             });
@@ -236,7 +236,7 @@ namespace LiteMonitor.src.UI.Helpers
             }
             catch (Exception ex)
             {
-                MessageBox.Show("无法打开链接: " + ex.Message);
+                MessageBox.Show("링크를 열 수 없습니다: " + ex.Message);
             }
         }
 

@@ -142,11 +142,10 @@ namespace LiteMonitor.src.UI.SettingsPage
                 LanguageManager.T("Menu.ActionTaskMgr"), 
                 LanguageManager.T("Menu.ActionSettings"),
                 LanguageManager.T("Menu.ActionTrafficHistory"),
-                LanguageManager.T("Menu.CleanMemory"),
-                LanguageManager.T("Menu.OpenWeb")
+                LanguageManager.T("Menu.CleanMemory")
             };
             group.AddComboIndex(this, "Menu.DoubleClickAction", actions,
-                () => Config?.TaskbarDoubleClickAction ?? 0,
+                () => (Config?.TaskbarDoubleClickAction ?? 0) is int a && a >= 0 && a < actions.Length ? a : 0,
                 idx => { if(Config!=null) Config.TaskbarDoubleClickAction = idx; }
             );
 

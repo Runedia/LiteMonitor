@@ -434,8 +434,8 @@ namespace LiteMonitor.src.SystemServices
             bool useCounter = _cfg.UseWinPerCounters && _perfCounterManager.IsInitialized;
             
             // ★★★ [优化] 全量更新判断 ★★★
-            // 如果开启了 WebServer，则需要强制更新所有硬件，因为网页端可能会查看主界面未开启的项目
-            bool forceAll = _cfg.WebServerEnabled;
+            // 网页服务已移除，只更新已启用的监控项
+            bool forceAll = false;
 
             // 2. CPU: 总是需要 (因为 LHM 要读温度)
             bool needCpu = forceAll || _cfg.IsAnyEnabled("CPU");

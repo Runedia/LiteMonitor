@@ -44,10 +44,10 @@ Release 解决方案构建成功，0 错误、215 条警告，主要为项目既
 
 重跑命令（项目根目录）
 dotnet build LiteMonitor.sln -c Release
-dotnet run --project test/安全修复回归/安全修复回归.csproj -c Release
+dotnet run --project test/SecurityRegression/SecurityRegression.csproj -c Release
 dotnet run --project test/反馈核验/反馈核验.csproj -c Release
 dotnet run --project test/节假日回退/节假日回退.csproj -c Release
-dotnet run --project test/发版审查/发版审查.csproj -c Release
+dotnet run --project test/ReleaseReview/ReleaseReview.csproj -c Release
 dotnet run --project test/节假日回退/节假日回退.csproj -c Release --no-build -- --live
 
 验证边界与兼容性

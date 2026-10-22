@@ -44,8 +44,8 @@ namespace LiteMonitor.src.UI.Helpers
             {
                 if (cfg.MaxLimitTipShown) return;
 
-                string msg = cfg.Language == "zh"
-                    ? $"您是首次开启 {name}。\n\n建议设置一下“电脑{name}”实际最大值，让进度条显示更准确。\n\n是否现在去设置？\n\n点“否”将不再提示，程序将在高负载时（如大型游戏时）进行动态学习最大值"
+                string msg = cfg.Language == "ko"
+                    ? $"{name}을(를) 처음 켰습니다.\n\n막대가 정확히 표시되도록 이 PC의 {name} 실제 최대값을 설정하는 것을 권장합니다.\n\n지금 설정할까요?\n\n'아니요'를 누르면 다시 묻지 않으며, 고부하(예: 대형 게임) 때 최대값을 자동으로 학습합니다."
                     : $"First launch of {name}.\n\nSet the actual maximum value for accurate progress bar display.\n\nGo to settings now?\n\nSelect \"No\" to skip permanently. App will auto-learn max value in high-load scenarios (e.g., gaming).";
 
                 cfg.MaxLimitTipShown = true;
@@ -63,7 +63,7 @@ namespace LiteMonitor.src.UI.Helpers
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("设置面板启动失败: " + ex.Message);
+                        MessageBox.Show("설정 창을 열지 못했습니다: " + ex.Message);
                     }
                 }
             }

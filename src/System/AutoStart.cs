@@ -21,7 +21,7 @@ namespace LiteMonitor.src.SystemServices
                 string root = Path.GetPathRoot(exePath)!;
                 if ((!string.IsNullOrEmpty(root) && new DriveInfo(root).DriveType == DriveType.Network) || new Uri(exePath).IsUnc)
                 {
-                    MessageBox.Show("Windows 计划任务不支持在网络路径下运行。\n请移动到本地硬盘。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Windows 작업 스케줄러는 네트워크 경로에서 실행할 수 없습니다.\n로컬 디스크로 옮기세요.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
             }
@@ -65,7 +65,7 @@ namespace LiteMonitor.src.SystemServices
                 catch (Exception ex)
                 {
                     // 捕获所有 IO 或 进程异常
-                    MessageBox.Show($"设置失败: {ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"설정 실패: {ex.Message}", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 finally
                 {

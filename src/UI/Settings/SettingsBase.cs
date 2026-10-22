@@ -95,8 +95,8 @@ namespace LiteMonitor.src.UI.SettingsPage
 
             if (hideMain && hideTray && !showBar)
             {
-                MessageBox.Show("为了防止程序无法唤出，不能同时隐藏 [主界面]、[托盘图标] 和 [任务栏]。", 
-                                "安全警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("프로그램을 다시 불러올 수 없게 되는 것을 막기 위해 [메인 창], [트레이 아이콘], [작업 표시줄]을 동시에 숨길 수 없습니다.", 
+                                "안전 경고", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 
                 if (chkHideMain != null) chkHideMain.Checked = false;
                 if (chkHideTray != null) chkHideTray.Checked = false;

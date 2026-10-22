@@ -12,7 +12,7 @@
     <DebugType>none</DebugType>
 		<DebugSymbols>false</DebugSymbols>
 	  
-    <Version>1.3.7</Version><!-- 程序主版本（UpdateChecker / About用） -->
+    <Version>1.3.7</Version><!-- 程序主版本（About用） -->
     <AssemblyVersion>1.0.0.0</AssemblyVersion><!-- 稳定不动 -->
     <FileVersion>1.3.7.0</FileVersion><!-- 文件属性显示 -->
   </PropertyGroup>
@@ -34,29 +34,13 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
         </Content>
-
-        <Content Include="resources\plugins\*.json">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-        </Content>
     </ItemGroup>
-	<ItemGroup>
-		<Content Include="resources\LiteMonitor.Updater.exe">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-    <Content Include="使用说明(必读).txt">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-	</ItemGroup>
-	
-	
+
+
 <ItemGroup>
   <Compile Remove="test\**" />
-  <Compile Remove="LiteMonitor.Updater\**" />
   <Compile Remove="LiteMonitor.Wpf\**" />
-  <EmbeddedResource Remove="LiteMonitor.Updater\**" />
   <EmbeddedResource Remove="LiteMonitor.Wpf\**" />
-  <None Remove="LiteMonitor.Updater\**" />
   <None Remove="LiteMonitor.Wpf\**" />
 </ItemGroup>
 	
