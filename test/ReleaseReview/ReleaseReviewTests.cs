@@ -54,6 +54,28 @@ internal static class Program
                 return Task.CompletedTask;
             });
         }
+        foreach (var (name, utility, time, performance, expected) in new (string, float?, float?, float?, float?)[]
+        {
+            ("Utility 固定为性能百分比时改用时间×性能", 120.7f, 19.2f, 120.7f, 19.2f * 120.7f / 100f),
+            ("正常 Utility 保持原值", 23f, 19.2f, 120.7f, 23f),
+            ("满载 Utility 截断为 100", 104f, 90f, 115f, 100f),
+            ("缺少 Utility 时用时间×性能", null, 19.2f, 120.7f, 19.2f * 120.7f / 100f),
+            ("时间×性能超过 100 时截断", null, 95f, 120f, 100f),
+            ("缺少性能百分比时保留 Utility", 23f, 19.2f, null, 23f),
+            ("仅有处理器时间时使用时间", null, 19.2f, null, 19.2f),
+            ("拒绝非数值 Utility", float.NaN, 19.2f, 120.7f, 19.2f * 120.7f / 100f),
+            ("计数器均缺失时交给硬件传感器", null, null, null, null)
+        })
+        {
+            await Run("CPU 负载：" + name, () =>
+            {
+                var method = typeof(PerformanceCounterManager).GetMethod("ResolveCpuLoad", BindingFlags.Static | BindingFlags.NonPublic)!;
+                float? actual = (float?)method.Invoke(null, new object?[] { utility, time, performance });
+                Check(expected == null ? actual == null : actual.HasValue && Math.Abs(actual.Value - expected.Value) < 0.01f,
+                    $"负载计算不符合预期：{actual}");
+                return Task.CompletedTask;
+            });
+        }
         await Run("内存和显存的数值与自定义单位一致", MemoryTest);
         foreach (var type in new[] { typeof(NetworkSpeedTester) })
         {
