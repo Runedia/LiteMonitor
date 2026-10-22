@@ -1,12 +1,10 @@
-[English](./README.en.md)
-
 # <img src="./resources/screenshots/logo.png"  width="28" style="vertical-align: middle; margin-top: -4px;" /> LiteMonitor
 가볍고 자유롭게 꾸밀 수 있는 오픈 소스 데스크톱 하드웨어 모니터입니다. CPU, GPU, 메모리, 디스크, 네트워크 등 시스템 상태를 실시간으로 보여 줍니다.
 
 세로/가로/작업 표시줄 표시, 테마 전환, 다국어, 투명도, 3단계 색상 경고를 지원합니다. 화면은 단순하고 설정 항목은 세밀합니다.
 
 > ℹ️ 이 저장소는 [Diorser/LiteMonitor](https://github.com/Diorser/LiteMonitor)를 기반으로 한 수정판입니다.
-> - **웹 모니터(HTTP/WebSocket 서버)와 플러그인 시스템을 제거했습니다.** 외부로 나가는 통신은 업데이트 확인, 드라이버 다운로드, 속도 테스트만 남습니다.
+> - **웹 모니터(HTTP/WebSocket 서버), 플러그인 시스템, 자동 업데이트를 제거했습니다.** 외부로 나가는 통신은 사용자가 승인한 드라이버/FPS 구성 요소 다운로드와 메뉴에서 실행하는 속도 테스트만 남습니다.
 > - UI 문구를 한국어로 정리했고, 첫 실행 언어는 한국어입니다.
 
 
@@ -58,7 +56,6 @@
 | 🧲 **화면 밖 이동 제한** | 켜면 창을 화면 밖으로 끌어낼 수 없습니다. |
 | 👆 클릭 통과 | 켜면 창이 마우스 입력을 가로채지 않습니다. |
 | 🧹 메모리 정리 | 메뉴에서 프로세스 작업 집합을 정리합니다. |
-| 🔄 업데이트 확인 | 시작 시 조용히 새 버전을 확인합니다. 아래 주의 사항을 확인하세요. |
 | 🚀 자동 시작 | 작업 스케줄러로 관리자 권한 자동 시작을 등록합니다. |
 | 📂 설정 저장 | 모든 설정을 실행 파일 옆 `settings.json`에 저장합니다. |
 
@@ -75,8 +72,8 @@
 - CPU 센서를 읽으려면 서명된 커널 드라이버 **PawnIO**가 필요합니다. 없으면 설치 여부를 묻습니다.
 - 관리자 권한으로 실행되므로, 일반 사용자가 쓸 수 있는 폴더에 두면 다른 프로그램이 실행 파일을 바꿔 권한을 얻을 수 있습니다. 설치 위치를 꼭 지켜 주세요.
 
-### ⚠️ 자동 업데이트 주의
-업데이트 확인은 원본 프로젝트(Diorser/LiteMonitor)의 배포본을 받습니다. 업데이트를 적용하면 **이 수정판이 원본으로 덮어써지고**, 웹·플러그인 기능과 중국어 문구가 돌아옵니다. 이 수정판을 유지하려면 설정에서 **자동 업데이트 확인을 끄세요.**
+### 업데이트
+자동 업데이트 기능은 없습니다. 새 버전은 소스를 받아 다시 빌드한 뒤, 실행 파일과 `resources` 폴더를 교체하세요. `settings.json`, `TrafficHistory.json`, `HardwareHistory.json`은 그대로 두면 설정과 기록이 유지됩니다.
 
 ---
 
@@ -114,7 +111,6 @@
 | `Language` | 현재 언어(비어 있으면 한국어) |
 | `TopMost` | 항상 위 |
 | `AutoStart` | 자동 시작 |
-| `AutoCheckUpdate` | 자동 업데이트 확인 |
 | `AutoHide` | 가장자리 자동 숨김 |
 | `ClampToScreen` | 화면 밖 이동 제한 |
 | `ClickThrough` | 클릭 통과 |
@@ -142,7 +138,6 @@
 | `HardwareMonitor.cs` | CPU/GPU/MEM/NET/DISK 수집, 자동/수동 장치 선택 |
 | `DriverInstaller.cs` | PawnIO 드라이버와 FPS 구성 요소 설치 |
 | `AutoStart.cs` | 작업 스케줄러 등록으로 자동 시작 관리 |
-| `UpdateChecker.cs` | 업데이트 확인(원본 프로젝트 배포 서버) |
 | `AboutForm.cs` | 정보 창 |
 
 ---
@@ -165,6 +160,10 @@ dotnet build LiteMonitor.csproj -c Release
 ```
 bin/Release/net8.0-windows/LiteMonitor.exe
 ```
+
+언어 파일(`resources/lang`)과 테마(`resources/themes`)는 같은 출력 폴더에 함께 복사됩니다. 배포할 때는 출력 폴더 전체를 옮기세요.
+
+PawnIO 드라이버(`driver.zip`)와 FPS 구성 요소(`LiteMonitorFPS.exe`)는 출력에 포함되지 않습니다. 필요할 때 설치 여부를 물은 뒤 원본 저장소 미러(Gitee, litemonitor.cn, GitHub)에서 받습니다. 저장소의 `resources/assets`에도 같은 파일이 들어 있습니다.
 
 ### 회귀 테스트
 ```powershell

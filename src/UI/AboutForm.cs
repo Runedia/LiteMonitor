@@ -20,7 +20,6 @@ namespace LiteMonitor
             string strDesc = isKo ? "오픈 소스 경량 하드웨어 모니터링 프로그램입니다.\n© 2025 Diorser / LiteMonitor Project" 
                                   : "A lightweight desktop hardware monitor.\n© 2025 Diorser / LiteMonitor Project";
             string strWebPrefix = isKo ? "공식 사이트" : "Website";
-            string strUpdate = LanguageManager.T("Menu.CheckUpdate");
             string strClose = LanguageManager.T("Menu.OK");
             string strBug = LanguageManager.T("Menu.Feedback");
 
@@ -141,23 +140,6 @@ namespace LiteMonitor
                 catch { }
             };
 
-            // === 检查更新按钮 ===
-            var btnCheckUpdate = new Button
-            {
-                Text = strUpdate,
-                Size = UIUtils.S(new Size(100, 30)),
-                Anchor = AnchorStyles.Bottom | AnchorStyles.Left,
-                // 稍微往右移一点，给 Bug 按钮腾出空间 (原 150 保持不变，刚好合适)
-                Location = new Point(UIUtils.S(150), UIUtils.S(235)),
-                FlatStyle = FlatStyle.Flat,
-                BackColor = ThemeManager.ParseColor(theme.Color.GroupBackground),
-                ForeColor = ThemeManager.ParseColor(theme.Color.TextPrimary),
-                Font = new Font(theme.Font.Family, 9.5f, FontStyle.Regular)
-            };
-            btnCheckUpdate.FlatAppearance.BorderSize = 0;
-            btnCheckUpdate.FlatAppearance.MouseOverBackColor = ThemeManager.ParseColor(theme.Color.BarBackground);
-            btnCheckUpdate.Click += async (_, __) => await UpdateChecker.CheckAsync(showMessage: true);
-
             // === 关闭按钮（扁平风格） ===
             var btnClose = new Button
             {
@@ -175,7 +157,7 @@ namespace LiteMonitor
             btnClose.FlatAppearance.MouseOverBackColor = ThemeManager.ParseColor(theme.Color.BarBackground);
 
             // 别忘了把新按钮 btnBug 加入集合
-            Controls.AddRange([lblTitle, lblVer, lblDesc, websiteLink, githubLink, btnBug, btnCheckUpdate, btnClose]);
+            Controls.AddRange([lblTitle, lblVer, lblDesc, websiteLink, githubLink, btnBug, btnClose]);
         }
     }
 }

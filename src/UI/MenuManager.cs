@@ -537,11 +537,7 @@ namespace LiteMonitor
             moreRoot.DropDownItems.Add(itemShutdown);
 
             moreRoot.DropDownItems.Add(new ToolStripSeparator());
-              // 0. 检查更新、反馈、日志、关于
-            var itemCheckUpdate = new ToolStripMenuItem(LanguageManager.T("Menu.CheckUpdate"));
-            itemCheckUpdate.Click += async (_, __) => await UpdateChecker.CheckAsync(true);
-            moreRoot.DropDownItems.Add(itemCheckUpdate);
-
+            // 0. 反馈、日志、关于
             var itemFeedback = new ToolStripMenuItem(LanguageManager.T("Menu.Feedback"));
             itemFeedback.Click += (_, __) => SystemActions.OpenUrl("https://github.com/Diorser/LiteMonitor/issues");
             moreRoot.DropDownItems.Add(itemFeedback);
@@ -569,26 +565,6 @@ namespace LiteMonitor
             menu.Items.Add(moreRoot);
             menu.Items.Add(new ToolStripSeparator());
 
-
-             // === 发现新版本 ===
-            if (UpdateChecker.IsUpdateFound)
-            {
-                bool isKo = cfg.Language?.ToLower().Contains("ko") == true;
-                string text = isKo ? $"💡새 버전(v{UpdateChecker.LatestVersionInfo?.latest})" : $"🔄New version(v{UpdateChecker.LatestVersionInfo?.latest})";
-                
-                var updateItem = new ToolStripMenuItem(text);
-                // 鼠标停留提示更新日期与内容摘要 (移除加粗和自定义颜色以解决托盘菜单闪烁问题)
-                string? rawLog = UpdateChecker.LatestVersionInfo?.changelog;
-                string logSummary = string.IsNullOrEmpty(rawLog) ? "" : rawLog.Replace("\r", "").Replace("\n", " ");
-                if (logSummary.Length > 45) logSummary = string.Concat(logSummary.AsSpan(0, 45), "...");
-                updateItem.ToolTipText = $"{UpdateChecker.LatestVersionInfo?.releaseDate}: {logSummary}";
-                updateItem.ForeColor = Color.RoyalBlue;
-                updateItem.Font = new Font(updateItem.Font, FontStyle.Bold);
-                
-                updateItem.Click += async (_, __) => await UpdateChecker.CheckAsync(true);
-                menu.Items.Add(updateItem);
-                menu.Items.Add(new ToolStripSeparator());
-            }
             // 7. 退出 (App) - 独立一栏放到外面来
             
             var itemExit = new ToolStripMenuItem(LanguageManager.T("Menu.Exit"));

@@ -55,7 +55,7 @@ internal static class Program
             });
         }
         await Run("内存和显存的数值与自定义单位一致", MemoryTest);
-        foreach (var type in new[] { typeof(UpdateChecker), typeof(NetworkSpeedTester) })
+        foreach (var type in new[] { typeof(NetworkSpeedTester) })
         {
             await Run("TLS：" + type.Name + " 拒绝不可信服务器证书", async () =>
             {

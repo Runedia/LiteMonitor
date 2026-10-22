@@ -8,7 +8,6 @@ using System.Net.Http.Headers; // 引入头文件处理
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Security.Principal;
 using LiteMonitor.src.Core; // 修复: 引用 Settings 类
 
 namespace LiteMonitor
@@ -23,7 +22,6 @@ namespace LiteMonitor
         // UI 配置
         public string VersionLabel { get; set; } = "";
         public string ActionButtonText { get; set; } = "Install";
-        public bool AutoExitOnSuccess { get; set; } = false; // 更新模式下为 true
     }
 
     public partial class UpdateDialog : Form
@@ -68,9 +66,7 @@ namespace LiteMonitor
             // rtbChangelog.Left = ...
             
             // 设置按钮文本
-            btnUpdate.Text = IsKorean ? 
-                (_context.ActionButtonText == "Update" ? "지금 업데이트" : "지금 설치") : 
-                _context.ActionButtonText;
+            btnUpdate.Text = IsKorean ? "지금 설치" : _context.ActionButtonText;
                 
             label1.Text = _context.Title; // 修复: 直接使用 Context 中的标题，避免英文环境下被错误覆盖
             btnCancel.Text = IsKorean ? "취소" : "Cancel";
@@ -303,16 +299,9 @@ namespace LiteMonitor
                 _cts = null; 
                 ctsToDispose?.Dispose();
 
-                if (_context.AutoExitOnSuccess)
-                {
-                    StartUpdater();
-                }
-                else
-                {
-                    // 组件下载模式：直接返回成功，由调用方负责后续安装逻辑
-                    this.DialogResult = DialogResult.OK;
-                    this.Close();
-                }
+                // 组件下载模式：直接返回成功，由调用方负责后续安装逻辑
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
             catch (OperationCanceledException)
             {
@@ -321,9 +310,7 @@ namespace LiteMonitor
                 bool isKo = _settings?.Language?.ToLower() == "ko";
                 lblStatus.Text = isKo ? "다운로드가 취소되었습니다" : "Download Canceled";
                 btnUpdate.Enabled = true;
-                btnUpdate.Text = IsKorean ? 
-                    (_context.ActionButtonText == "Update" ? "지금 업데이트" : "지금 설치") : 
-                    _context.ActionButtonText;
+                btnUpdate.Text = IsKorean ? "지금 설치" : _context.ActionButtonText;
                 btnCancel.Enabled = true; // 确保取消按钮可用
                 btnCancel.Text = isKo ? "닫기" : "Close";
                 progress.Value = 0;
@@ -349,100 +336,6 @@ namespace LiteMonitor
             {
                 _cts?.Dispose();
                 _cts = null;
-            }
-        }
-
-        private void StartUpdater()
-        {
-            string resourcesDir = Path.Combine(AppContext.BaseDirectory, "resources");
-            string updater = "";
-
-            // ★★★ 1. 主程序抢先更新 Updater.exe ★★★
-            // 防止 Updater 运行时无法自我覆盖
-            // 返回解压后的 Updater 路径 (优先取 ZIP 里的新版)
-            string? preparedPath = UpdateChecker.PreUpdateUpdater(_context.SavePath);
-
-            // ★★★ 2. 决策使用哪个 Updater ★★★
-            if (!string.IsNullOrEmpty(preparedPath) && File.Exists(preparedPath))
-            {
-                // A. 预更新成功，直接使用刚解压出来的最新版
-                updater = preparedPath;
-            }
-            else
-            {
-                // B. 预更新失败 (ZIP异常?)，尝试回退到现有文件
-                string newUpdater = Path.Combine(resourcesDir, "LiteMonitor.Updater.exe");
-                string oldUpdater = Path.Combine(resourcesDir, "Updater.exe");
-
-                if (File.Exists(newUpdater)) updater = newUpdater;
-                else if (File.Exists(oldUpdater)) updater = oldUpdater;
-            }
-
-            // ★★★ 3. 最终检查 ★★★
-            if (string.IsNullOrEmpty(updater) || !File.Exists(updater))
-            {
-                bool isKo = _settings?.Language?.ToLower() == "ko";
-                string msg = isKo ? $"업데이트 프로그램을 찾을 수 없습니다. 다시 설치해 보세요.\nSearch Path: {resourcesDir}" : $"Updater not found, please reinstall.\nSearch Path: {resourcesDir}";
-                string title = isKo ? "파일 없음" : "File Missing";
-                
-                MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            var psi = new ProcessStartInfo
-            {
-                FileName = updater,
-                Arguments = $"\"{_context.SavePath}\"", // 传递 ZIP 路径
-                WorkingDirectory = AppContext.BaseDirectory // 显式指定工作目录
-            };
-
-            // ★★★ 智能提权逻辑 ★★★
-            if (IsRunningAsAdmin())
-            {
-                // 已经是管理员，直接继承权限，无需再弹窗
-                psi.UseShellExecute = false; 
-            }
-            else
-            {
-                // 普通用户，申请提权
-                psi.UseShellExecute = true;
-                psi.Verb = "runas"; 
-            }
-
-            try
-            {
-                Process.Start(psi);
-                Application.Exit(); // 启动成功，退出主程序
-            }
-            catch (System.ComponentModel.Win32Exception ex) when (ex.NativeErrorCode == 1223)
-            {
-                // ★★★ 捕获 Error 1223: 操作已被用户取消 ★★★
-                // 用户在 UAC 弹窗点了“否”，我们要静默处理，不要弹错误窗
-                // 恢复界面状态，允许用户再次点击
-                bool isKo = _settings?.Language?.ToLower() == "ko";
-                btnUpdate.Enabled = true;
-                btnUpdate.Text = isKo ? "지금 업데이트" : "Update";
-            }
-            catch (Exception ex)
-            {
-                bool isKo = _settings?.Language?.ToLower() == "ko";
-                string msg = isKo ? $"업데이트 프로그램 실행 실패:\n{ex.Message}" : $"Failed to start updater:\n{ex.Message}";
-                string title = isKo ? "오류" : "Error";
-                
-                MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                // 恢复按钮状态
-                btnUpdate.Enabled = true;
-                btnUpdate.Text = isKo ? "다시 시도" : "Retry";
-            }
-        }
-
-        // 辅助方法：检查当前是否为管理员
-        private bool IsRunningAsAdmin()
-        {
-            using (var identity = WindowsIdentity.GetCurrent())
-            {
-                var principal = new WindowsPrincipal(identity);
-                return principal.IsInRole(WindowsBuiltInRole.Administrator);
             }
         }
 
